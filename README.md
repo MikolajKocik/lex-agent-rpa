@@ -39,3 +39,17 @@ docker compose up -d
 docker compose run --rm tests
 ```
 
+### CI/CD Pipeline Secrets (GitHub Actions)
+To enable automated building and pushing of Docker images on `git push` to `main`, configure the following repository secrets:
+
+1. **Generate Docker Hub Access Token:**
+   * Go to [Docker Hub Account Settings](https://hub.docker.com/settings/security) -> **Security**.
+   * Click **New Access Token**, grant **Read & Write** permissions, and copy the generated token.
+
+2. **Add Secrets in GitHub:**
+   * In your repository on GitHub, navigate to:
+     `Settings` -> `Secrets and variables` -> `Actions`.
+   * Under **Repository secrets**, click **New repository secret** and add:
+     * `DOCKERHUB_USERNAME`: Your Docker Hub username.
+     * `DOCKERHUB_TOKEN`: The Personal Access Token generated above.
+
