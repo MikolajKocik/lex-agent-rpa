@@ -1,0 +1,32 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: src/api/Dockerfile
+    image: lex-agent-rpa-api:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  db:
+    image: postgres:17-trixie
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  tests:
+    build:
+      context: .
+      dockerfile: src/api/Dockerfile
+    entrypoint: ["pytest"]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
