@@ -1,0 +1,26 @@
+# odpowiedź bota na halucynacje
+define bot refuse due to hallucination
+  "Przepraszam, ale nie jestem w stanie wygenerować bezpiecznej i pewnej odpowiedzi na podstawie dostępnych aktów prawnych (ryzyko halucynacji)."
+
+# główne flow sprawdzające halucynacje i zatrzymanie konwersacji
+define flow check hallucinations
+  # Wywołujemy akcję z Pythona przekazując jej odpowiedź bota oraz kontekst (RAG)
+  $is_grounded = execute check_hallucination_action(context=$context, bot_response=$bot_message)
+  
+  # Jeśli akcja zwróci False, nadpisujemy odpowiedź i przerywamy proces
+  if not $is_grounded
+    bot refuse due to hallucination
+    stop
+
+# odpowiedź bota na błąd językowy
+define bot refuse due to language
+  "Przepraszam, wystąpił wewnętrzny błąd. Wygenerowana odpowiedź nie jest w języku polskim."
+
+# główne flow sprawdzające język polski i zatrzymanie konwersacji
+define flow check polish language
+  # Wywołujemy akcję sprawdzającą język
+  $is_polish = execute check_polish_language_action(bot_response=$bot_message)
+
+  if not $is_polish
+    bot refuse due to language
+    stop

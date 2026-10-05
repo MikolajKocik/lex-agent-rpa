@@ -53,3 +53,4 @@ To enable automated building and pushing of Docker images on `git push` to `main
      * `DOCKERHUB_USERNAME`: Your Docker Hub username.
      * `DOCKERHUB_TOKEN`: The Personal Access Token generated above.
 
+![GitHub Secrets Configuration](docs/github-secrets-setup.png)
