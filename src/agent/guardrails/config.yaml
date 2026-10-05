@@ -8,10 +8,10 @@ rails:
     flows:
       - check restricted topics
       - check jailbreak
-      - check pii
+      - check pii input
   output:
     flows:
       - check hallucinations
       - check polish language
       - check fact checking
-      - check pii
+      - check pii output

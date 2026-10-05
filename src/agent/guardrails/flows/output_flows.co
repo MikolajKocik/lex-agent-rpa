@@ -25,9 +25,13 @@ define flow check polish language
     bot refuse due to language
     stop
 
-# bezpieczeństwo prompt injection flow
-define flow check jailbreak
-  $is_safe = execute check_jailbreak
-  if not $is_safe
-    bot refuse to respond
+# flow dla fact checkingu
+define flow check fact checking
+  $is_accurate = execute check_facts
+  if not $is_accurate
+    bot refuse due to hallucination
     stop
+
+# anonimizacja PII na wyjściu 
+define flow check pii output
+  $bot_message = execute scrub_pii(text=$bot_message)

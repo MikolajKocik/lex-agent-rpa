@@ -1,0 +1,10 @@
+# bezpieczeństwo prompt injection flow
+define flow check jailbreak
+  $is_safe = execute check_jailbreak
+  if not $is_safe
+    bot refuse to respond
+    stop
+
+# anonimizacja PII na wejściu (nie przerywamy konwersacji)
+define flow check pii input
+  $user_message = execute scrub_pii(text=$user_message)
