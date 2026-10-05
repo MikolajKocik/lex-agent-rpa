@@ -18,7 +18,7 @@ async def execute_agent_task(
     Main entry point for the agent. Receives the goal/task (e.g., "Analyze contract X and move to archive Y").
     The agent decides in the background which Tools to use to execute the task.
     """
-    agent_result = await graph_service.process_user_task(payload.task)
+    agent_result = await graph_service(payload.task)
     return AgentTaskResponse(answer=agent_result)
 
 @router.get("/health")
