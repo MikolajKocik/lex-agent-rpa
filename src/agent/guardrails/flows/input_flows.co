@@ -5,6 +5,3 @@ define flow check jailbreak
     bot refuse to respond
     stop
 
-# anonimizacja PII na wejściu (nie przerywamy konwersacji)
-define flow check pii input
-  $user_message = execute scrub_pii_action(text=$user_message)
