@@ -24,3 +24,14 @@ define flow check polish language
   if not $is_polish
     bot refuse due to language
     stop
+
+# flow dla fact checkingu
+define flow check fact checking
+  $is_accurate = execute check_facts
+  if not $is_accurate
+    bot refuse due to hallucination
+    stop
+
+# anonimizacja PII na wyjściu 
+define flow check pii output
+  $bot_message = execute scrub_pii_action(text=$bot_message)

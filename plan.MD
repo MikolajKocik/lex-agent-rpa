@@ -38,6 +38,8 @@ Projekt bezpiecznego asystenta AI dla domeny prawnej z automatyzacją procesów 
   - [x] Definicja przepływów Colang w `src/agent/guardrails/flows/main_flow.co`.
   - [x] Wymuszenie zakazu porad medycznych / finansowych (Input Rails).
   - [x] Wymuszenie języka polskiego i weryfikacja halucynacji (Output Rails).
+  - [ ] Implementacja PII Scrubbing (anonimizacja danych wejściowych i wyjściowych).
+  - [ ] Zabezpieczenie przed Prompt Injection (Jailbreak check na wejściu).
 - [ ] **Rejestracja narzędzi agenta (`src/agent/tools/`):**
   - [ ] Narzędzie odpytywania bazy aktów prawnych (`legal_retriever_tool`).
   - [ ] Narzędzie wywoływania automatyzacji portalu (`rpa_task_tool`).
