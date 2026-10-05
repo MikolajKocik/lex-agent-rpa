@@ -34,4 +34,4 @@ define flow check fact checking
 
 # anonimizacja PII na wyjściu 
 define flow check pii output
-  $bot_message = execute scrub_pii(text=$bot_message)
+  $bot_message = execute scrub_pii_action(text=$bot_message)

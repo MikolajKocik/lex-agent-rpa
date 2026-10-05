@@ -7,4 +7,4 @@ define flow check jailbreak
 
 # anonimizacja PII na wejściu (nie przerywamy konwersacji)
 define flow check pii input
-  $user_message = execute scrub_pii(text=$user_message)
+  $user_message = execute scrub_pii_action(text=$user_message)
