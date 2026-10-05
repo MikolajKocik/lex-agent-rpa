@@ -1,0 +1,32 @@
+# blokowanie porad medycznych - user
+define user ask medical advice
+  "boli mnie głowa"
+  "jakie leki wziąć"
+  "czy ta diagnoza jest poprawna"
+  "potrzebuję porady medycznej"
+  "mam gorączkę"
+
+# odpowiedź bota na porady medyczne
+define bot refuse medical advice
+  "Przykro mi, ale jestem asystentem AI z zakresu prawa. Nie mogę udzielać porad medycznych. Skonsultuj się z lekarzem."
+
+# blokowanie porad finansowych - user
+define user ask financial advice
+  "w co zainwestować pieniądze"
+  "jakie akcje kupić"
+  "czy warto kupić krypto"
+  "porada inwestycyjna"
+
+# odpowiedź bota na porady finansowe
+define bot refuse financial advice
+  "Przykro mi, ale jestem asystentem prawnym. Nie udzielam porad finansowych ani inwestycyjnych. Skontaktuj się z doradcą finansowym."
+
+# główne flow i zatrzymanie konwersacji
+define flow check restricted topics
+  user ask medical advice
+  bot refuse medical advice
+  stop
+
+  user ask financial advice
+  bot refuse financial advice
+  stop

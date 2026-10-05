@@ -1,0 +1,13 @@
+models:
+  - type: main
+    engine: nim
+    model: meta/llama-3.1-8b-instruct
+
+rails:
+  input:
+    flows:
+      - check restricted topics
+  output:
+    flows:
+      - check hallucinations
+      - check polish language
