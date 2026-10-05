@@ -20,7 +20,11 @@ dependencies = [
     "langchain-nvidia-ai-endpoints>=0.1.0",
     "langgraph>=0.0.30",
     "azure-storage-blob>=12.19.0",
-    "deepagents",
+    "deepagents>=0.7.21",
+    "nemoguardrails>=0.24.1",
+    "langdetect>=1.0.9",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
 ]
 
 [tool.hatch.build.targets.wheel]
