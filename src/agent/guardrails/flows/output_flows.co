@@ -24,3 +24,10 @@ define flow check polish language
   if not $is_polish
     bot refuse due to language
     stop
+
+# bezpieczeństwo prompt injection flow
+define flow check jailbreak
+  $is_safe = execute check_jailbreak
+  if not $is_safe
+    bot refuse to respond
+    stop
