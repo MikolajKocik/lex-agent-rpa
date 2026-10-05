@@ -1,17 +1,25 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Request
 from .schemas import AgentTaskRequest, AgentTaskResponse
+
+from infrastructure.services.agent_services import GraphService
 
 router = APIRouter(tags=["Agent"])
 
+# register dependency service
+def get_graph_service(request: Request) -> GraphService:
+    return GraphService(rails=request.app.state.rails)
+
 @router.post("/task", response_model=AgentTaskResponse)
-async def execute_agent_task(request: AgentTaskRequest):
+async def execute_agent_task(
+    payload: AgentTaskRequest,
+    graph_service: GraphService = Depends(get_graph_service)
+):
     """
-    Główny punkt wejścia dla agenta. Przyjmuje cel/zadanie (np. "Przeanalizuj umowę X i przenieś do archiwum Y").
-    Agent w tle decyduje, jakich Narzędzi (Tools) użyć do wykonania zadania.
+    Main entry point for the agent. Receives the goal/task (e.g., "Analyze contract X and move to archive Y").
+    The agent decides in the background which Tools to use to execute the task.
     """
-    
-    # TODO
-    pass
+    agent_result = await graph_service.process_user_task(payload.task)
+    return AgentTaskResponse(answer=agent_result)
 
 @router.get("/health")
 def healthcheck():
