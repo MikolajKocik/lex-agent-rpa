@@ -1,10 +1,11 @@
+from typing import Any
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from abc import ABC, abstractmethod
 
 class ILLMProvider(ABC):
     @property
     @abstractmethod
-    def model(self):
+    def model(self) -> Any:
         """Get LLM instance"""
         pass
 
