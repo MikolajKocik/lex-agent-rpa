@@ -14,6 +14,7 @@ class SecurityLexResponse(BaseModel):
 class CriticAnalyzeResponse(BaseModel):
     """Model response acting as a critical lawyer"""
     legal_opinion: str = Field(description="Detailed legal opinion based on the review and security audit")
+    pii_entities_found: str = Field(description="")
 
 class RpaActionResponse(BaseModel):
     """Model specifying which physical RPA actions (e.g. download/save) the system should perform"""
