@@ -8,5 +8,10 @@ from .graph_nodes import (
     automate_web_process_node,
     process_task_node,
 )
+from .route_nodes import (
+    route_after_rpa,
+    route_after_critic,
+    route_after_audit,
+)
 
 __all__ = ["agent_app", "AgentState"]
