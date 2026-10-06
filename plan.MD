@@ -53,6 +53,7 @@ Projekt bezpiecznego asystenta AI dla domeny prawnej z automatyzacją procesów 
 - [ ] **Przygotowanie bazy danych wektorowej:**
   - [ ] Włączenie rozszerzenia `pgvector` w PostgreSQL.
   - [ ] Przygotowanie modeli SQLAlchemy / SQLModel dla aktów prawnych i chunków wektorowych.
+  - [ ] Pipeline integrujący Azure Blob Storage z PostgreSQL (pobieranie PDF z Bloba, ekstrakcja tekstu i wektoryzacja do bazy).
 - [ ] **Parser aktów prawnych (ISAP) (`src/rag/parsers/`):**
   - [ ] Opracowanie parsera dzielącego ustawy i rozporządzenia na jednostki redakcyjne (Dział, Rozdział, Artykuł, Paragraf, Ustęp).
   - [ ] Ekstrakcja metadanych: numer artykułu, data publikacji, status prawny, sygnatura.
@@ -88,3 +89,18 @@ Projekt bezpiecznego asystenta AI dla domeny prawnej z automatyzacją procesów 
 - [ ] **UI i Zdalny dostęp:**
   - [ ] Podpięcie interfejsu użytkownika (np. Open WebUI lub lekki dedykowany dashboard).
   - [ ] Konfiguracja bezpiecznego tunelu Cloudflare Zero Trust (Tunnels) lub Tailscale do dostępu zdalnego bez publicznego IP.
+
+---
+
+## 🧪 Faza 6: Testowanie, Ewaluacja i QA
+
+- [ ] **Testy jednostkowe (Unit Tests - Pytest):**
+  - [ ] Testy dla funkcji pomocniczych i parserów RAG (`src/rag/parsers/`).
+  - [ ] Mockowanie wywołań LLM (testowanie zachowania węzłów bez odpytywania NVIDIA API).
+  - [ ] Testy autoryzacji 2FA dla modułu RPA.
+- [ ] **Testy integracyjne (Integration Tests):**
+  - [ ] Przetestowanie pełnego łańcucha: RPA (Blob) -> Wektoryzacja (Postgres) -> Graf LangGraph -> Endpoint FastAPI.
+  - [ ] Testowanie rygorystyczności NeMo Guardrails (czy poprawnie blokuje halucynacje i PII w długich tekstach).
+- [ ] **Ewaluacja Agenta i RAG (LLM-as-a-judge):**
+  - [ ] Zbudowanie datasetu z 10-20 umowami referencyjnymi.
+  - [ ] Wykorzystanie mniejszych/tańszych modeli do oceny dokładności wyodrębniania klauzul przez głównego agenta (Hit-Rate, MRR).
