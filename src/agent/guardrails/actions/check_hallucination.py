@@ -1,13 +1,14 @@
 from nemoguardrails.actions import action
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
-from pathlib import Path
+from agent.utils.agent_utils import load_prompt
 import logging
 
 log = logging.getLogger(__name__)
 
-EVALUATOR_PATH = Path(__file__).parent.parent.parent / "prompts" / "evaluator_prompt_v1.md"
+
+EVALUATOR_PROMPT = load_prompt(file_name="evaluator_prompt", p_count=3, version=1)
 
 @action(name="check_hallucination_action")
 async def check_hallucination_action(context: dict, bot_response: str) -> bool:
@@ -27,18 +28,15 @@ async def check_hallucination_action(context: dict, bot_response: str) -> bool:
     try:
         # Use a fast model as a judge
         llm = ChatNVIDIA(model="meta/llama-3.1-8b-instruct", temperature=0.0)
+                
+        chain = EVALUATOR_PROMPT | llm | StrOutputParser()
         
-        template_str = EVALUATOR_PATH.read_text(encoding="utf-8")
-        prompt_template = ChatPromptTemplate.from_template(template_str)
-        
-        chain = prompt_template | llm
-        
-        result = await chain.ainvoke({
+        result_text = await chain.ainvoke({
             "rag_context": rag_context,
             "bot_response": bot_response
         })
         
-        decision = result.content.strip().upper()
+        decision = result_text.strip().upper()
         
         if "YES" in decision:
             log.warning(f"Hallucination detected! Judge decision: {decision}")
