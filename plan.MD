@@ -29,20 +29,22 @@ Projekt bezpiecznego asystenta AI dla domeny prawnej z automatyzacją procesów 
 
 ## 🧠 Faza 2: Agent Orkiestrator (LangGraph) & Guardrails
 
-- [ ] **Struktura agenta:**
-  - [x] Utworzenie szablonów promptów (`system_prompt_v1.md`, `human_prompt_v1.md`).
-  - [ ] Implementacja grafu decyzyjnego w `src/agent/graph.py` (LangGraph - węzły i krawędzie warunkowe).
-  - [ ] Integracja z NVIDIA Cloud API (`meta/llama-3.1-8b-instruct`) przez `langchain-nvidia-ai-endpoints`.
+- [ ] **Struktura agenta (LangGraph):**
+  - [x] Utworzenie szablonów promptów (`src/agent/prompts/`).
+  - [ ] Implementacja grafu decyzyjnego w `src/agent/graph/graph_workflow.py` (węzły i krawędzie).
+  - [ ] Wdrożenie routerów przepływu w `src/agent/graph/route_nodes.py`.
+  - [x] Integracja z NVIDIA Cloud API (`meta/llama-3.1-8b-instruct`) i structured output (Pydantic).
 - [x] **Bezpieczeństwo i Guardrails (NVIDIA NeMo Guardrails):**
   - [x] Szkic konfiguracji w `src/agent/guardrails/config.yaml`.
   - [x] Definicja przepływów Colang w `src/agent/guardrails/flows/main_flow.co`.
   - [x] Wymuszenie zakazu porad medycznych / finansowych (Input Rails).
   - [x] Wymuszenie języka polskiego i weryfikacja halucynacji (Output Rails).
-  - [ ] Implementacja PII Scrubbing (anonimizacja danych wejściowych i wyjściowych).
-  - [ ] Zabezpieczenie przed Prompt Injection (Jailbreak check na wejściu).
+  - [x] Implementacja PII Scrubbing (anonimizacja danych wejściowych i wyjściowych).
+  - [x] Zabezpieczenie przed Prompt Injection (Jailbreak check na wejściu).
 - [ ] **Rejestracja narzędzi agenta (`src/agent/tools/`):**
-  - [ ] Narzędzie odpytywania bazy aktów prawnych (`legal_retriever_tool`).
-  - [ ] Narzędzie wywoływania automatyzacji portalu (`rpa_task_tool`).
+  - [ ] Implementacja narzędzi RPA (np. pobieranie umów, powiadomienia Slack).
+  - [ ] Implementacja narzędzi Krytyka (np. wyszukiwanie DuckDuckGo w `critical_reviewer_tools.py`).
+  - [ ] Narzędzie odpytywania bazy aktów prawnych (po zrobieniu RAG).
 
 ---
 
@@ -78,7 +80,7 @@ Projekt bezpiecznego asystenta AI dla domeny prawnej z automatyzacją procesów 
 ## 🌐 Faza 5: API, Interfejs i Bezpieczny Dostęp
 
 - [ ] **Warstwa API (FastAPI) (`src/api/`):**
-  - [ ] Podstawowe schematy Pydantic (`schemas.py`).
+  - [x] Podstawowe schematy Pydantic (`schemas.py`).
   - [x] Endpoint weryfikacji zdrowia (`/health`).
   - [ ] Główny endpoint agenta (`POST /task`) z obsługą kolejkowania i zadań w tle (Background Tasks / Celery / ARQ).
 - [ ] **Integracja z magazynem Azure Blob Storage (`src/infrastructure/storage/`):**
