@@ -1,7 +1,8 @@
 import httpx
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from api.routes import router
+from api.routers.agent import router as agent_router
+from api.routers.search import router as search_router
 from pathlib import Path
 
 from nemoguardrails import Guardrails, RailsConfig
@@ -43,6 +44,7 @@ async def lifespan(app: FastAPI):
     )
 
     yield
+    
     app.state.rails = None
     await app.state.http_client.aclose()
 
@@ -52,4 +54,5 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan
 )
-app.include_router(router, prefix="/api")
+app.include_router(agent_router, prefix="/api")
+app.include_router(search_router, prefix="/api")

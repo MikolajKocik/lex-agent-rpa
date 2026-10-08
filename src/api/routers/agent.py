@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from .schemas import AgentRequest, AgentResponse
-from .dependencies import get_graph_service
+from api.schemas import AgentRequest, AgentResponse
+from api.dependencies import get_graph_service
 
 from infrastructure.services.agent_services import GraphService
 
@@ -22,3 +22,4 @@ async def execute_agent_task(
 @router.get("/health")
 def healthcheck():
     return { "status": "ok" }
+    

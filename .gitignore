@@ -5,6 +5,11 @@
 __pycache__
 venv
 
+# build artifacts
+dist/
+build/
+*.egg-info/
+
 # Terraform
 **/.terraform/*
 *.tfstate

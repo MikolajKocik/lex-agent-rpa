@@ -1,4 +1,6 @@
-from fastapi import Request
+from src.infrastructure.services.web_search_service import DuckDuckGoService
+from src.infrastructure.services.web_search_service import WebService
+from fastapi import Depends, Request
 import httpx
 from nemoguardrails import Guardrails
 
@@ -15,3 +17,8 @@ def get_http_client(request: Request) -> httpx.AsyncClient:
 def get_graph_service(request: Request) -> GraphService:
     """Returns initialized GraphService."""
     return GraphService(rails=request.app.state.rails)
+
+def get_web_search_service(
+    client: httpx.AsyncClient = Depends(get_http_client),
+) -> WebService:
+    return DuckDuckGoService(client=client, max_results=5)

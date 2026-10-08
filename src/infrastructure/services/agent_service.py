@@ -1,10 +1,9 @@
 from typing import Protocol
 
 class AgentService(Protocol):
-
     async def __call__(self, task_text: str) -> str: ...
 
-class GraphService():
+class GraphService:
     def __init__(self, rails):
         self.rails = rails
 
