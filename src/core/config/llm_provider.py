@@ -1,15 +1,12 @@
-from typing import Any
+from langchain_core.language_models import BaseChatModel
+from typing import Protocol
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
-from abc import ABC, abstractmethod
 
-class ILLMProvider(ABC):
+class LLMProvider(Protocol):
     @property
-    @abstractmethod
-    def model(self) -> Any:
-        """Get LLM instance"""
-        pass
+    def model(self) -> BaseChatModel: ...
 
-class NvidiaLLMProvider(ILLMProvider):
+class NvidiaLLMProvider():
     def __init__(self, temperature: float = 0.0):
         self._model = ChatNVIDIA(
             model="meta/llama-3.1-8b-instruct",

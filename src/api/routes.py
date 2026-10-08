@@ -1,13 +1,10 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 from .schemas import AgentRequest, AgentResponse
+from .dependencies import get_graph_service
 
 from infrastructure.services.agent_services import GraphService
 
 router = APIRouter(tags=["Agent"])
-
-# register dependency service
-def get_graph_service(request: Request) -> GraphService:
-    return GraphService(rails=request.app.state.rails)
 
 @router.post("/task", response_model=AgentResponse)
 async def execute_agent_task(
@@ -19,7 +16,7 @@ async def execute_agent_task(
     The agent decides in the background which Tools to use to execute the task.
     """
     # TODO update response with metadata from .schemas
-    agent_result = await graph_service(payload.task)
+    agent_result = await graph_service(payload.question)
     return AgentResponse(answer=agent_result)
 
 @router.get("/health")

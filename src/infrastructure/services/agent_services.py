@@ -1,15 +1,10 @@
-from fastapi import Depends, Request
-from abc import ABC, abstractmethod
+from typing import Protocol
 
+class AgentService(Protocol):
 
-class AgentService(ABC):
-    
-    @abstractmethod
-    async def __call__(self, task_text: str) -> str:
-        pass
+    async def __call__(self, task_text: str) -> str: ...
 
-
-class GraphService(AgentService):
+class GraphService():
     def __init__(self, rails):
         self.rails = rails
 
@@ -27,7 +22,9 @@ class GraphService(AgentService):
             {"role": "user", "content": task_text}
         ])
 
-        return response["content"]
+        if isinstance(response, dict):
+            return str(response.get("content", ""))
+        return str(response)
     
 
 

@@ -1,14 +1,11 @@
+import httpx
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from api.routes import router
 from pathlib import Path
 
 from nemoguardrails import Guardrails, RailsConfig
 from nemoguardrails.actions import action
-
-RAILS_PATH = str(Path(__file__).parent.parent / "agent" / "guardrails")
-
-config = RailsConfig.from_path(RAILS_PATH)
-rails = Guardrails(config)
 
 @action(is_system_action=True, name="run_langgraph_agent")
 async def run_langgraph_agent(context: dict):
@@ -23,13 +20,36 @@ async def run_langgraph_agent(context: dict):
     
     return result
 
-rails.register_action(run_langgraph_agent)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    rails_dir = Path(__file__).resolve().parent.parent / "agent" / "guardrails"
+    if not rails_dir.exists():
+        raise RuntimeError(
+            f"Guardrails catalog does not exist or is not a directory: {rails_dir}"
+        )
+    
+    config = RailsConfig.from_path(str(rails_dir))
+    rails = Guardrails(config)
+    rails.register_action(run_langgraph_agent)
+    app.state.rails = rails
+
+    limits = httpx.Limits(max_keepalive_connections=20, max_connections=100)
+    timeout = httpx.Timeout(10.0, connect=5.0)
+
+    app.state.http_client = httpx.AsyncClient(
+        limits=limits,
+        timeout=timeout,
+        headers={"User-Agent": "FastAPI-Microservice/1.0"}
+    )
+
+    yield
+    app.state.rails = None
+    await app.state.http_client.aclose()
 
 app = FastAPI(
     title="RPA autonomous agent microservice",
     description="Manages an archive and legal documentation.",
-    version="0.1.0"
+    version="0.1.0",
+    lifespan=lifespan
 )
-
-app.state.rails = rails
 app.include_router(router, prefix="/api")
