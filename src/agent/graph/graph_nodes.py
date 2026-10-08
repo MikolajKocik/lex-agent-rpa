@@ -80,13 +80,13 @@ def critical_secure_node(state: AgentState) -> dict:
     chain = prompt | structured_llm
     
     audit_result = state.get("security_audit_result", {})
-    pii_entities_found = "\n".join(audit_result.get("pii_entities_found", []))
-    if not pii_entities_found:
-        pii_entities_found = "Brak znalezionych PII."
+    pii_summary = "\n".join(audit_result.get("pii_entities_found", []))
+    if not pii_summary:
+        pii_summary = "Brak znalezionych PII."
     
     result = cast(CriticAnalyzeResponse, chain.invoke({
         "preliminary_opinion": state.get("critic_opinion", ""),
-        "pii_entities_found": pii_entities_found,
+        "pii_summary": pii_summary,
         "is_safe": str(state.get("security_check_status", True)),
         "input_task": state.get("input_task", "")
     }))

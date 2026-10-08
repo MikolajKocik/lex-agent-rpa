@@ -5,7 +5,7 @@ Wstępna opinia:
 {preliminary_opinion}
 
 Wyniki audytu bezpieczeństwa (PII):
-{pii_entities_found}
+{pii_summary}
 
 Czy dokument jest bezpieczny do procesowania?
 {is_safe}
