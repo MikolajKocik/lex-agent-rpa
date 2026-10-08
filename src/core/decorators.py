@@ -1,6 +1,6 @@
 from typing import Any
 from collections.abc import Callable
-from huggingface_hub import logging
+import logging
 from functools import wraps
 import time
 import httpx
@@ -21,7 +21,7 @@ http_retry = retry(
 def log_execution(level: int = logging.INFO) -> Callable:
     """Logging start, end event, elapsed time and optional exceptions"""
     def decorator(func: Callable) -> Callable:
-        logger = logging.get_logger(func.__module__)
+        logger = logging.getLogger(func.__module__)
         
         @wraps(func)
         async def wrapper(*args: Any, **kwargs: Any) -> Any:

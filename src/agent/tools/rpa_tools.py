@@ -1,5 +1,6 @@
 from langchain_core.tools import tool
 
+@log_execution
 @tool
 def download_email_attachment_tool():
     pass
