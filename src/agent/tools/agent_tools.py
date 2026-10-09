@@ -48,6 +48,17 @@ async def search_legal_database_tool(query: str, top_k: int = 5) -> str:
 
 @tool(_handle_tool_error=True)
 @log_execution()
+async def download_court_case_document_tool(case_signature: str) -> str:
+    """Downloads a court case document PDF from the legal portal via automated headless RPA with 2FA and saves it."""
+    from src.rpa.browser.portal_automation import LegalPortalAutomation
+
+    automation = LegalPortalAutomation()
+    blob_url = await automation.fetch_and_archive_case(case_signature)
+    return f"Dokument sprawy {case_signature} zostal pomyslnie pobrany i zarchiwizowany w chmurze Azure Blob: {blob_url}"
+
+
+@tool(_handle_tool_error=True)
+@log_execution()
 async def search_postgres_database_tool(search_term: str) -> list | str:
     """
     Searches the PostgreSQL database using vector search (pgvector).
@@ -168,6 +179,7 @@ def create_agent_tools(
         save_opinion_to_drive_tool,
         extract_text_from_pdf_tool,
         search_legal_database_tool,
+        download_court_case_document_tool,
     ]
 
 

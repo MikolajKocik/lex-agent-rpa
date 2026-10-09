@@ -29,6 +29,8 @@ dependencies = [
     "azure-identity>=1.26.0",
     "azure-keyvault-secrets>=4.11.3",
     "pypdf>=4.0.0",
+    "pyotp>=2.9.0",
+    "playwright>=1.40.0",
 ]
 
 [project.optional-dependencies]

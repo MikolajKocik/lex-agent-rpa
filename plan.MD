@@ -70,14 +70,14 @@ System asystenta prawnego oparty na architekturze agentowej, automatyzacji proce
 
 ## Faza 4: Automatyzacja RPA (Playwright i Uwierzytelnianie 2FA)
 
-- [ ] **Moduł uwierzytelniania 2FA (`src/rpa/auth/`):**
-  - [ ] Generator kodów jednorazowych TOTP z wykorzystaniem biblioteki `pyotp`.
-  - [ ] Bezpieczny odczyt sekretu 2FA z Azure Key Vault.
-- [ ] **Automatyzacja portalu prawnego / sądowego (`src/rpa/browser/`):**
-  - [ ] Skrypty Playwright działające w trybie headless.
-  - [ ] Logowanie do portalu z automatycznym wypełnianiem formularza i wstrzykiwaniem kodu 2FA.
-  - [ ] Pobieranie dokumentów spraw i przekazywanie ich do Azure Blob Storage.
-  - [ ] Obsługa wyjątków, weryfikacja captcha oraz polityki ponawiania operacji (retry policies).
+- [x] **Moduł uwierzytelniania 2FA (`src/rpa/auth/`):**
+  - [x] Generator kodów jednorazowych TOTP z wykorzystaniem biblioteki `pyotp` (`totp_service.py`).
+  - [x] Bezpieczny odczyt sekretu 2FA z Azure Key Vault z mechanizmem fallback.
+- [x] **Automatyzacja portalu prawnego / sądowego (`src/rpa/browser/`):**
+  - [x] Skrypty Playwright działające asynchronicznie w trybie headless (`portal_automation.py`).
+  - [x] Logowanie do portalu z automatycznym wypełnianiem formularza i wstrzykiwaniem kodu 2FA.
+  - [x] Pobieranie dokumentów spraw i przekazywanie ich do Azure Blob Storage (`download_court_case_document_tool`).
+  - [x] Obsługa wyjątków, weryfikacja captcha oraz polityki ponawiania operacji.
 
 ---
 
