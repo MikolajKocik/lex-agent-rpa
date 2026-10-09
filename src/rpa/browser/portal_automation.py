@@ -1,7 +1,9 @@
-import os
 import logging
+import os
 from pathlib import Path
-from playwright.async_api import async_playwright, Browser, Page, Playwright
+
+from playwright.async_api import Browser, Page, async_playwright
+
 from src.infrastructure.blob.client import upload_document_to_blob
 from src.rpa.auth.totp_service import TOTPAuthService
 
@@ -10,17 +12,15 @@ logger = logging.getLogger(__name__)
 
 class PortalAutomationError(Exception):
     """Base exception for legal portal RPA automation failures."""
-    pass
 
 
 class PortalAuthenticationError(PortalAutomationError):
     """Raised when portal login or 2FA verification fails."""
-    pass
 
 
 class CaseNotFoundError(PortalAutomationError):
     """Raised when the requested case signature cannot be located on the portal."""
-    pass
+
 
 
 class LegalPortalAutomation:
