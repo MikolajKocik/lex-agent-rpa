@@ -48,7 +48,7 @@ async def search_postgres_database_tool(search_term: str) -> list | str:
     query_vector = await _embeddings.aembed_query(search_term)
     vector_str = "[" + ",".join(map(str, query_vector)) + "]"
 
-    async with get_postgres_connection() as conn:
+    async with get_postgres_connection(readonly=True) as conn:
         rows = await conn.fetch(SEARCH_QUERY, vector_str)
 
     return [{**dict(r), "id": str(r["id"])} for r in rows]
@@ -70,7 +70,7 @@ async def save_opinion_to_drive_tool(
     query_vector = await _embeddings.aembed_query(content)
     vector_str = "[" + ",".join(map(str, query_vector)) + "]"
 
-    async with get_postgres_connection() as conn:
+    async with get_postgres_connection(readonly=False) as conn:
         doc_id = await conn.fetchval(
             INSERT_DOCUMENT_QUERY,
             file_name,

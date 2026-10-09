@@ -8,19 +8,26 @@ import logging
 load_dotenv()
 logger = logging.getLogger("databases")
 
+
 @asynccontextmanager
-async def get_postgres_connection():
+async def get_postgres_connection(readonly: bool = False):
+    """Establishes an asyncpg connection to PostgreSQL with transaction management."""
+    user = os.getenv("DB_USER", "lex_user")
     conn = await asyncpg.connect(
-        user="read_only_user",
+        user=user,
         password=POSTGRES_PASSWORD,
-        database=os.getenv("DB_NAME"),
-        host=os.getenv("DB_HOST"),
+        database=os.getenv("DB_NAME", "lex_agent_db"),
+        host=os.getenv("DB_HOST", "localhost"),
     )
     try:
-        async with conn.transaction(readonly=True, isolation="repeatable_read"):
-            yield conn
+        if readonly:
+            async with conn.transaction(readonly=True, isolation="repeatable_read"):
+                yield conn
+        else:
+            async with conn.transaction():
+                yield conn
     except Exception as e:
-        logger.exception(f"Database error: {e}")
+        logger.exception("Database error: %s", e)
         raise
     finally:
         await conn.close()

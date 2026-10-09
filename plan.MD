@@ -1,106 +1,110 @@
 # Project Roadmap & Implementation Plan: Lex Agent RPA
 
-Projekt bezpiecznego asystenta AI dla domeny prawnej z automatyzacją procesów (RPA), hybrydowym wyszukiwaniem RAG oraz integracją chmurową.
+System asystenta prawnego oparty na architekturze agentowej, automatyzacji procesów RPA, hybrydowym wyszukiwaniu informacji (Hybrid RAG) oraz integracji z usługami chmurowymi Azure.
 
 ---
 
-## 🏗️ Faza 1: Środowisko bazowe, Infrastruktura i Konteneryzacja
+## Faza 1: Środowisko bazowe, Infrastruktura i Konteneryzacja
 
 - [x] **Zarządzanie infrastrukturą jako kod (IaC - Terraform):**
-  - [x] Utworzenie konfiguracji Terraform w `src/infrastructure/templates/`.
-  - [x] Wdrożenie Azure Key Vault (`lex-rpa-keyvault`) do przechowywania sekretów.
-  - [x] Wdrożenie Azure Storage Account (`lexrpaagentstorage`) wraz z kontenerem Blob na dokumenty prawne.
-  - [x] Dodanie procedury bezpiecznego usuwania zasobów (`terraform destroy`).
+  - [x] Konfiguracja Terraform w katalogu `src/infrastructure/templates/`.
+  - [x] Wdrożenie usługi Azure Key Vault (`lex-rpa-keyvault`) do zarządzania sekretami.
+  - [x] Wdrożenie Azure Storage Account (`lexrpaagentstorage`) oraz kontenera Blob na dokumenty.
+  - [x] Procedura bezpiecznego niszczenia zasobów (`terraform destroy`).
 - [x] **Bezpieczeństwo sekretów i rejestru:**
-  - [x] Skrypt `setup-docker-pass.sh` do szyfrowania poświadczeń Dockera przez GPG/pass.
-  - [x] Skrypty `nvidia-secret-export.sh` oraz `postgres-secret-export.sh` do eksportu kluczy z Azure Key Vault.
-  - [x] Konfiguracja `.dockerignore` chroniąca przed wyciekiem sekretów do obrazów kontenerów.
+  - [x] Skrypt `scripts/setup-docker-pass.sh` konfigurujący bezpieczny magazyn poświadczeń GPG/pass.
+  - [x] Skrypty eksportu zmiennych środowiskowych z Key Vault (`scripts/*-secret-export.sh`).
+  - [x] Konfiguracja reguł `.dockerignore` zapobiegająca przenikaniu danych poufnych do obrazów.
 - [x] **Konteneryzacja (Docker & Docker Compose):**
-  - [x] Produkcyjny `Dockerfile` (Python 3 slim, non-root user `appuser`, healthcheck).
-  - [x] Konfiguracja `docker-compose.yml` oraz `docker-compose.override.yml`.
-  - [x] Integracja bazy danych PostgreSQL 17 (`postgres:17-trixie`) z wolumenem `postgres-data`.
-  - [x] Serwis testowy (`tests`) z profilem uruchomieniowym `test`.
-- [x] **CI/CD Pipeline (GitHub Actions):**
-  - [x] Linter kodu (Ruff) i walidacja formatowania.
-  - [x] Zautomatyzowane testy (Pytest) z testową instancją bazy PostgreSQL.
-  - [x] Automatyczne budowanie i wypychanie obrazu do Docker Hub po merge do `main`.
+  - [x] Obraz produkcyjny `Dockerfile` (Python 3 slim, użytkownik nieuprzywilejowany `appuser`, healthcheck).
+  - [x] Konfiguracja środowiska wielokontenerowego w `docker-compose.yml` oraz `docker-compose.override.yml`.
+  - [x] Integracja bazy danych PostgreSQL z wolumenem trwałym `postgres-data`.
+  - [x] Dedykowany serwis testowy z profilem `test`.
+- [x] **Pipeline CI/CD (GitHub Actions):**
+  - [x] Statyczna analiza kodu i weryfikacja formatowania (Ruff).
+  - [x] Zautomatyzowane testy jednostkowe (Pytest) z instancją testową PostgreSQL.
+  - [x] Automatyczne budowanie i publikacja obrazu w Docker Hub po scaleniu do gałęzi `main`.
 
 ---
 
-## 🧠 Faza 2: Agent Orkiestrator (LangGraph) & Guardrails
+## Faza 2: Agent Orkiestrator (LangGraph) i Bezpieczeństwo (Guardrails)
 
-- [ ] **Struktura agenta (LangGraph):**
-  - [x] Utworzenie szablonów promptów (`src/agent/prompts/`).
-  - [ ] Implementacja grafu decyzyjnego w `src/agent/graph/graph_workflow.py` (węzły i krawędzie).
-  - [ ] Wdrożenie routerów przepływu w `src/agent/graph/route_nodes.py`.
-  - [x] Integracja z NVIDIA Cloud API (`meta/llama-3.1-8b-instruct`) i structured output (Pydantic).
-- [x] **Bezpieczeństwo i Guardrails (NVIDIA NeMo Guardrails):**
-  - [x] Szkic konfiguracji w `src/agent/guardrails/config.yaml`.
-  - [x] Definicja przepływów Colang w `src/agent/guardrails/flows/main_flow.co`.
-  - [x] Wymuszenie zakazu porad medycznych / finansowych (Input Rails).
-  - [x] Wymuszenie języka polskiego i weryfikacja halucynacji (Output Rails).
-  - [x] Implementacja PII Scrubbing (anonimizacja danych wejściowych i wyjściowych).
-  - [x] Zabezpieczenie przed Prompt Injection (Jailbreak check na wejściu).
-- [ ] **Rejestracja narzędzi agenta (`src/agent/tools/`):**
-  - [ ] Implementacja narzędzi RPA (np. pobieranie umów, powiadomienia Slack).
-  - [ ] Implementacja narzędzi Krytyka (np. wyszukiwanie DuckDuckGo w `critical_reviewer_tools.py`).
-  - [ ] Narzędzie odpytywania bazy aktów prawnych (po zrobieniu RAG).
+- [x] **Struktura agenta (LangGraph):**
+  - [x] Szablony promptów w `src/agent/prompts/`.
+  - [x] Implementacja grafu decyzyjnego w `src/agent/graph/graph_workflow.py` (węzły i krawędzie).
+  - [x] Wdrożenie routerów przepływu w `src/agent/graph/route_nodes.py` (krawędzie warunkowe).
+  - [x] Integracja z modelem NVIDIA Cloud API (`meta/llama-3.1-8b-instruct`) i formatem wyjściowym Pydantic.
+- [x] **Bezpieczeństwo i mechanizmy ochronne (NVIDIA NeMo Guardrails):**
+  - [x] Konfiguracja główna w `src/agent/guardrails/config.yaml`.
+  - [x] Definicja reguł dialogowych Colang w `src/agent/guardrails/flows/main_flow.co`.
+  - [x] Walidacja zapytań wejściowych (blokada porad medycznych i finansowych).
+  - [x] Wymuszenie języka polskiego i weryfikacja halucynacji w odpowiedziach.
+  - [x] Anonimizacja danych wrażliwych (PII Scrubbing).
+  - [x] Ochrona przed atakami typu Prompt Injection i Jailbreak.
+- [x] **Rejestracja i implementacja narzędzi agenta (`src/agent/tools/`):**
+  - [x] Narzędzia integracyjne (Microsoft Graph API do pobierania załączników, Slack Webhook do alertów).
+  - [x] Integracja z Azure Blob Storage do archiwizacji dokumentów i opinii.
+  - [x] Wyszukiwanie sieciowe za pomocą Tavily Search API (`search_web_tool`).
+  - [x] Wyszukiwanie wektorowe w bazie danych PostgreSQL (`search_postgres_database_tool`).
+  - [x] Architektura Dependency Injection i fabryki narzędzi w `agent_tools.py` i `dependencies.py`.
 
 ---
 
-## 📚 Faza 3: Moduł Hybrid RAG (Domena Prawna)
+## Faza 3: Moduł Hybrid RAG (Domena Prawna)
 
-- [ ] **Przygotowanie bazy danych wektorowej:**
-  - [ ] Włączenie rozszerzenia `pgvector` w PostgreSQL.
-  - [ ] Przygotowanie modeli SQLAlchemy / SQLModel dla aktów prawnych i chunków wektorowych.
-  - [ ] Pipeline integrujący Azure Blob Storage z PostgreSQL (pobieranie PDF z Bloba, ekstrakcja tekstu i wektoryzacja do bazy).
+- [ ] **Baza danych wektorowa:**
+  - [x] Włączenie rozszerzenia `pgvector` w PostgreSQL oraz schemat `template.sql`.
+  - [ ] Modele danych SQLAlchemy / SQLModel dla aktów prawnych i fragmentów tekstowych (chunków).
+  - [ ] Pipeline przetwarzania integrujący Azure Blob Storage z bazą danych (ekstrakcja tekstu i wektoryzacja).
 - [ ] **Parser aktów prawnych (ISAP) (`src/rag/parsers/`):**
-  - [ ] Opracowanie parsera dzielącego ustawy i rozporządzenia na jednostki redakcyjne (Dział, Rozdział, Artykuł, Paragraf, Ustęp).
-  - [ ] Ekstrakcja metadanych: numer artykułu, data publikacji, status prawny, sygnatura.
-- [ ] **Silnik wektorowy i leksykalny (`src/rag/`):**
+  - [ ] Parser strukturalny dzielący akty prawne na jednostki redakcyjne (Dział, Rozdział, Artykuł, Paragraf, Ustęp).
+  - [ ] Ekstrakcja metadanych: numer artykułu, data publikacji, status prawny, sygnatura aktu.
+- [ ] **Silnik hybrydowego wyszukiwania (`src/rag/`):**
   - [ ] Generowanie embeddingów dla chunków prawnych (`src/rag/embeddings/`).
-  - [ ] Implementacja wyszukiwania semantycznego (podobieństwo cosinusowe w pgvector).
-  - [ ] Implementacja wyszukiwania leksykalnego (BM25 / Full-Text Search PostgreSQL).
-  - [ ] Hybrydowy Retriever (`src/rag/retrievers/`) łączący wyniki obu metod (Reciprocal Rank Fusion - RRF).
+  - [ ] Wyszukiwanie semantyczne (podobieństwo cosinusowe z indeksem HNSW w pgvector).
+  - [ ] Wyszukiwanie leksykalne (Full-Text Search PostgreSQL z indeksem GIN).
+  - [ ] Hybrydowy retriever (`src/rag/retrievers/`) łączący wyniki za pomocą Reciprocal Rank Fusion (RRF).
 
 ---
 
-## 🤖 Faza 4: Automatyzacja RPA (Playwright + 2FA)
+## Faza 4: Automatyzacja RPA (Playwright i Uwierzytelnianie 2FA)
 
 - [ ] **Moduł uwierzytelniania 2FA (`src/rpa/auth/`):**
-  - [ ] Implementacja generatora kodów TOTP w oparciu o `pyotp`.
-  - [ ] Bezpieczne pobieranie sekretu 2FA z Azure Key Vault.
+  - [ ] Generator kodów jednorazowych TOTP z wykorzystaniem biblioteki `pyotp`.
+  - [ ] Bezpieczny odczyt sekretu 2FA z Azure Key Vault.
 - [ ] **Automatyzacja portalu prawnego / sądowego (`src/rpa/browser/`):**
-  - [ ] Skrypt Playwright w trybie headless.
-  - [ ] Automatyczne logowanie do portalu (wypełnienie formularza + wstrzyknięcie kodu 2FA).
-  - [ ] Pobieranie dokumentów / spraw i przekazywanie ich do Azure Blob Storage.
-  - [ ] Obsługa błędów, captcha i mechanizmy ponawiania (retry policies).
+  - [ ] Skrypty Playwright działające w trybie headless.
+  - [ ] Logowanie do portalu z automatycznym wypełnianiem formularza i wstrzykiwaniem kodu 2FA.
+  - [ ] Pobieranie dokumentów spraw i przekazywanie ich do Azure Blob Storage.
+  - [ ] Obsługa wyjątków, weryfikacja captcha oraz polityki ponawiania operacji (retry policies).
 
 ---
 
-## 🌐 Faza 5: API, Interfejs i Bezpieczny Dostęp
+## Faza 5: Warstwa API, Interfejs i Bezpieczny Dostęp
 
 - [ ] **Warstwa API (FastAPI) (`src/api/`):**
-  - [x] Podstawowe schematy Pydantic (`schemas.py`).
-  - [x] Endpoint weryfikacji zdrowia (`/health`).
-  - [ ] Główny endpoint agenta (`POST /task`) z obsługą kolejkowania i zadań w tle (Background Tasks / Celery / ARQ).
-- [ ] **Integracja z magazynem Azure Blob Storage (`src/infrastructure/storage/`):**
-  - [ ] Klient do bezpiecznego uploadu wygenerowanych pism procesowych i załączników.
-- [ ] **UI i Zdalny dostęp:**
-  - [ ] Podpięcie interfejsu użytkownika (np. Open WebUI lub lekki dedykowany dashboard).
-  - [ ] Konfiguracja bezpiecznego tunelu Cloudflare Zero Trust (Tunnels) lub Tailscale do dostępu zdalnego bez publicznego IP.
+  - [x] Modele żądań i odpowiedzi Pydantic (`schemas.py`).
+  - [x] Endpoint monitorowania stanu usługi (`GET /health`).
+  - [ ] Główny endpoint orkiestratora (`POST /task`) z obsługą kolejkowania i zadań w tle (Background Tasks / Celery / ARQ).
+- [x] **Integracja z Azure Blob Storage (`src/infrastructure/blob/`):**
+  - [x] Asynchroniczny klient do bezpiecznego przesyłania i pobierania plików (`upload_document_to_blob`, `download_document_from_blob`).
+- [ ] **Interfejs użytkownika i dostęp zdalny:**
+  - [ ] Integracja panelu użytkownika (Open WebUI lub dedykowany interfejs webowy).
+  - [ ] Konfiguracja bezpiecznego tunelu Cloudflare Zero Trust (Tunnels) lub Tailscale do komunikacji bez wystawiania publicznego adresu IP.
 
 ---
 
-## 🧪 Faza 6: Testowanie, Ewaluacja i QA
+## Faza 6: Testowanie, Ewaluacja i Zapewnienie Jakości (QA)
 
-- [ ] **Testy jednostkowe (Unit Tests - Pytest):**
-  - [ ] Testy dla funkcji pomocniczych i parserów RAG (`src/rag/parsers/`).
-  - [ ] Mockowanie wywołań LLM (testowanie zachowania węzłów bez odpytywania NVIDIA API).
-  - [ ] Testy autoryzacji 2FA dla modułu RPA.
-- [ ] **Testy integracyjne (Integration Tests):**
-  - [ ] Przetestowanie pełnego łańcucha: RPA (Blob) -> Wektoryzacja (Postgres) -> Graf LangGraph -> Endpoint FastAPI.
-  - [ ] Testowanie rygorystyczności NeMo Guardrails (czy poprawnie blokuje halucynacje i PII w długich tekstach).
-- [ ] **Ewaluacja Agenta i RAG (LLM-as-a-judge):**
-  - [ ] Zbudowanie datasetu z 10-20 umowami referencyjnymi.
-  - [ ] Wykorzystanie mniejszych/tańszych modeli do oceny dokładności wyodrębniania klauzul przez głównego agenta (Hit-Rate, MRR).
+- [ ] **Testy jednostkowe (Pytest):**
+  - [x] Testy jednostkowe usług wyszukiwania i integracji (`tests/unit/`).
+  - [ ] Testy jednostkowe parserów strukturalnych RAG (`src/rag/parsers/`).
+  - [ ] Izolowane testy węzłów grafu z wykorzystaniem mocków API LLM.
+  - [ ] Testy generatora kodów 2FA dla modułu RPA.
+- [ ] **Testy integracyjne:**
+  - [x] Testy integracyjne serwisów zewnętrznych (`tests/integration/`).
+  - [ ] Walidacja pełnego łańcucha operacyjnego: RPA -> Blob Storage -> Wektoryzacja Postgres -> Graf LangGraph -> Endpoint FastAPI.
+  - [ ] Weryfikacja skuteczności NeMo Guardrails w blokowaniu wycieków PII oraz halucynacji.
+- [ ] **Ewaluacja jakościowa (LLM-as-a-judge):**
+  - [ ] Przygotowanie referencyjnego zbioru ewaluacyjnego (10-20 umów i spraw prawnych).
+  - [ ] Ocena dokładności ekstrakcji klauzul i retrievalu (metryki Hit-Rate, MRR).
