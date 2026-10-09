@@ -3,7 +3,8 @@ from azure.keyvault.secrets import SecretClient
 import sys
 import logging
 
-logger = logging.getLogger("azure").setLevel(logging.WARNING)
+logger = logging.getLogger("azure")
+logger.setLevel(logging.WARNING)
 handler = logging.StreamHandler(stream=sys.stdout)
 logger.addHandler(handler)
 

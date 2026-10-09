@@ -1,4 +1,8 @@
 from .agent_tools import (
+    create_agent_tools,
+    create_download_email_attachment_tool,
+    create_search_web_tool,
+    create_send_slack_notification_tool,
     download_email_attachment_tool,
     extract_text_from_pdf_tool,
     save_opinion_to_drive_tool,
@@ -9,6 +13,10 @@ from .agent_tools import (
 )
 
 __all__ = [
+    "create_agent_tools",
+    "create_download_email_attachment_tool",
+    "create_search_web_tool",
+    "create_send_slack_notification_tool",
     "download_email_attachment_tool",
     "extract_text_from_pdf_tool",
     "save_opinion_to_drive_tool",
