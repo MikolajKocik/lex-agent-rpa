@@ -1,9 +1,10 @@
-from nemoguardrails.actions import action
-from langchain_nvidia_ai_endpoints import ChatNVIDIA
+import logging
+
 from langchain_core.output_parsers import StrOutputParser
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+from nemoguardrails.actions import action
 
 from src.agent.utils.agent_utils import load_prompt
-import logging
 
 log = logging.getLogger(__name__)
 

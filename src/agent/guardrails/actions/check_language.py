@@ -1,7 +1,7 @@
-from nemoguardrails.actions import action
-from langdetect import detect
-
 import logging
+
+from langdetect import detect
+from nemoguardrails.actions import action
 
 log = logging.getLogger(__name__)
 

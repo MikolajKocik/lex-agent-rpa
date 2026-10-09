@@ -1,6 +1,8 @@
-import os
 import logging
+import os
+
 import pyotp
+
 from src.infrastructure.keyvault.client import secret_client
 
 logger = logging.getLogger(__name__)

@@ -1,12 +1,12 @@
-from src.infrastructure.services.web_search_service import TavilySearchService, WebService
-from src.infrastructure.services.slack_service import SlackService, SlackWebhookService
-from src.infrastructure.email.ms_graph_client import EmailService, MSGraphEmailClient
-from src.infrastructure.services.agent_service import GraphService
+import httpx
+from fastapi import Depends, Request
+from nemoguardrails import Guardrails
 
 from src.agent.tools.agent_tools import create_agent_tools
-from fastapi import Depends, Request
-import httpx
-from nemoguardrails import Guardrails
+from src.infrastructure.email.ms_graph_client import EmailService, MSGraphEmailClient
+from src.infrastructure.services.agent_service import GraphService
+from src.infrastructure.services.slack_service import SlackService, SlackWebhookService
+from src.infrastructure.services.web_search_service import TavilySearchService, WebService
 
 
 def get_guardrails(request: Request) -> Guardrails:

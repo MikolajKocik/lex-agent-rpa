@@ -1,6 +1,6 @@
 import re
-from src.rag.models import LegalChunkModel
 
+from src.rag.models import LegalChunkModel
 
 ARTICLE_PATTERN = re.compile(
     r"(?:^|\n)(Art\.\s*\d+[a-z]*(?:\s*(?:ust|§)\.?\s*\d+)?\.?|§\s*\d+[a-z]*\.?)",

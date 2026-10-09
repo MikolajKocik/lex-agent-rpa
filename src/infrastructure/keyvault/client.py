@@ -1,7 +1,8 @@
+import logging
+import sys
+
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-import sys
-import logging
 
 logger = logging.getLogger("azure")
 logger.setLevel(logging.WARNING)

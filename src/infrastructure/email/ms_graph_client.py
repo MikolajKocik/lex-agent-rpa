@@ -1,9 +1,11 @@
-import os
 import base64
+import os
 from dataclasses import dataclass
 from typing import Protocol
+
 import httpx
 from azure.identity.aio import DefaultAzureCredential
+
 from src.core.decorators import http_retry, log_execution
 
 GRAPH_BASE_URL = "https://graph.microsoft.com/v1.0"

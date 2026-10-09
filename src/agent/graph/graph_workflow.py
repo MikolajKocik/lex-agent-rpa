@@ -1,21 +1,22 @@
 from dataclasses import dataclass
-from langgraph.graph import StateGraph, START, END
 
-from .graph_states import AgentState
+from langgraph.graph import END, START, StateGraph
+
 from .graph_nodes import (
-    automate_web_process_node,
-    ground_review_node,
-    critical_review_node,
-    web_research_node,
     audit_lex_node,
+    automate_web_process_node,
+    critical_review_node,
     critical_secure_node,
-    reject_and_notify_slack,
+    ground_review_node,
     notify_slack_error,
+    reject_and_notify_slack,
+    web_research_node,
 )
+from .graph_states import AgentState
 from .route_nodes import (
-    route_after_rpa,
-    route_after_critic,
     route_after_audit,
+    route_after_critic,
+    route_after_rpa,
 )
 
 

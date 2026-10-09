@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class GroundReviewResponse(BaseModel):
     """Model response for the initial verification and reading node (Ground Review)"""
     extracted_clauses: list[str] = Field(

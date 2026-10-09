@@ -42,3 +42,25 @@ test = [
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
 
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+    "B",
+    "RUF"
+]
+ignore = [
+    "B008",
+    "BLE001",
+    "E501",
+    "RUF013"
+]
+
+
+

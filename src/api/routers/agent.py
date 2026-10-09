@@ -1,14 +1,15 @@
 from uuid import uuid4
+
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 
-from src.core.decorators import log_execution
+from src.api.dependencies import get_graph_service
 from src.api.schemas import (
     AgentRequest,
     AgentResponse,
     AsyncTaskResponse,
     TaskStatusResponse,
 )
-from src.api.dependencies import get_graph_service
+from src.core.decorators import log_execution
 from src.infrastructure.services.agent_service import GraphService
 
 router = APIRouter(tags=["Agent"])

@@ -1,7 +1,8 @@
-from src.infrastructure.services.web_search_service import WebService
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+
 from src.api.dependencies import get_web_search_service
+from src.infrastructure.services.web_search_service import WebService
 
 router = APIRouter(prefix="/search", tags=["Search"])
 

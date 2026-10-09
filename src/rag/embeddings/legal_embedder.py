@@ -1,4 +1,5 @@
 from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
+
 from src.rag.models import LegalChunkModel
 
 
@@ -23,7 +24,7 @@ class LegalEmbedder:
         texts = [c.content for c in chunks]
         vectors = await self._client.aembed_documents(texts)
 
-        for chunk, vector in zip(chunks, vectors):
+        for chunk, vector in zip(chunks, vectors, strict=False):
             chunk.embedding = vector
 
         return chunks

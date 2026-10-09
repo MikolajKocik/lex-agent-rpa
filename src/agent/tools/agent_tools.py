@@ -1,18 +1,17 @@
-from src.infrastructure.database.db import get_postgres_connection
-from src.infrastructure.services.web_search_service import WebService, TavilySearchService
-from src.infrastructure.services.slack_service import SlackService, SlackWebhookService
-from src.infrastructure.email.ms_graph_client import EmailService, MSGraphEmailClient
-from src.infrastructure.blob.client import upload_document_to_blob
-
-from src.rag.parsers.pdf_extractor import extract_text_from_pdf_file
-from src.rag.retrievers.hybrid_retriever import HybridLegalRetriever, format_rag_context
-
-from src.core.decorators import log_execution
-from langchain_core.tools import tool, BaseTool
-from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
-import httpx
 from pathlib import Path
 
+import httpx
+from langchain_core.tools import BaseTool, tool
+from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
+
+from src.core.decorators import log_execution
+from src.infrastructure.blob.client import upload_document_to_blob
+from src.infrastructure.database.db import get_postgres_connection
+from src.infrastructure.email.ms_graph_client import EmailService, MSGraphEmailClient
+from src.infrastructure.services.slack_service import SlackService, SlackWebhookService
+from src.infrastructure.services.web_search_service import TavilySearchService, WebService
+from src.rag.parsers.pdf_extractor import extract_text_from_pdf_file
+from src.rag.retrievers.hybrid_retriever import HybridLegalRetriever, format_rag_context
 
 _embeddings = NVIDIAEmbeddings()
 

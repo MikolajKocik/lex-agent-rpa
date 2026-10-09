@@ -1,9 +1,11 @@
-from dotenv import load_dotenv
-from src.infrastructure.keyvault.client import POSTGRES_PASSWORD
-import asyncpg
-from contextlib import asynccontextmanager
-import os
 import logging
+import os
+from contextlib import asynccontextmanager
+
+import asyncpg
+from dotenv import load_dotenv
+
+from src.infrastructure.keyvault.client import POSTGRES_PASSWORD
 
 load_dotenv()
 logger = logging.getLogger("databases")

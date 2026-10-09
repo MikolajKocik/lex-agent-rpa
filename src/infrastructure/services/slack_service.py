@@ -1,6 +1,8 @@
 import os
 from typing import Protocol
+
 import httpx
+
 from src.core.decorators import http_retry, log_execution
 
 SLACK_WEBHOOK_URL_ENV = "SLACK_WEBHOOK_URL"

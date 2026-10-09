@@ -1,11 +1,10 @@
 from uuid import UUID
-from src.infrastructure.database.db import get_postgres_connection
-from src.infrastructure.blob.client import upload_document_to_blob
 
+from src.infrastructure.blob.client import upload_document_to_blob
+from src.infrastructure.database.db import get_postgres_connection
 from src.rag.embeddings.legal_embedder import LegalEmbedder
 from src.rag.parsers.isap_parser import extract_act_signature, parse_legal_act_into_chunks
 from src.rag.parsers.pdf_extractor import extract_text_from_pdf_bytes
-
 
 INSERT_ACT_QUERY = """
     INSERT INTO legal_acts (title, signature, publication_date, status, blob_url)

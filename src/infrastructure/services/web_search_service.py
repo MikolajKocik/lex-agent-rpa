@@ -1,7 +1,10 @@
-import httpx
-from src.core.decorators import http_retry, log_execution
 from typing import Protocol
+
+import httpx
+
+from src.core.decorators import http_retry, log_execution
 from src.infrastructure.keyvault.client import TAVILY_API_KEY
+
 
 class WebService(Protocol):
     async def __call__(self, query: str) -> str: ...

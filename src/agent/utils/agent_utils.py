@@ -1,5 +1,7 @@
-from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
+
+from langchain_core.prompts import ChatPromptTemplate
+
 
 def load_prompt(file_name: str, p_count: int = 1, version: int = 1) -> ChatPromptTemplate:
     """

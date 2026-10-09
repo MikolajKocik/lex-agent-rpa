@@ -1,14 +1,14 @@
-import httpx
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
 from pathlib import Path
 
-from src.api.routers.agent import router as agent_router
-from src.api.routers.search import router as search_router
-from src.agent.graph import agent_app
-
+import httpx
+from fastapi import FastAPI
 from nemoguardrails import Guardrails, RailsConfig
 from nemoguardrails.actions import action
+
+from src.agent.graph import agent_app
+from src.api.routers.agent import router as agent_router
+from src.api.routers.search import router as search_router
 
 
 @action(is_system_action=True, name="run_langgraph_agent")
