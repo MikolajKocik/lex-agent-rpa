@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from api.schemas import AgentRequest, AgentResponse
 from api.dependencies import get_graph_service
 
-from infrastructure.services.agent_services import GraphService
+from infrastructure.services.agent_service import GraphService
 
 router = APIRouter(tags=["Agent"])
 
