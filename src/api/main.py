@@ -1,25 +1,34 @@
 import httpx
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from api.routers.agent import router as agent_router
-from api.routers.search import router as search_router
 from pathlib import Path
+
+from src.api.routers.agent import router as agent_router
+from src.api.routers.search import router as search_router
+from src.agent.graph import agent_app
 
 from nemoguardrails import Guardrails, RailsConfig
 from nemoguardrails.actions import action
 
+
 @action(is_system_action=True, name="run_langgraph_agent")
 async def run_langgraph_agent(context: dict):
-    """
-    Main inference process defined using graph's states
-    """
+    """Main inference process executing the LangGraph decision pipeline."""
     user_message = context.get("last_user_message", "")
+    document_content = context.get("document_content", "")
 
-    # TODO: Replace the mock with actual LangGraph invocation
-    # result = await graph.invoke({"messages": [user_message]})
-    result = f"Agent result for: {user_message}"
-    
-    return result
+    final_state = await agent_app.ainvoke({
+        "input_task": user_message,
+        "document_content": document_content,
+        "messages": [],
+    })
+
+    return (
+        final_state.get("critic_opinion")
+        or final_state.get("generation")
+        or "Zadanie zostało pomyślnie zrealizowane."
+    )
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -47,6 +56,7 @@ async def lifespan(app: FastAPI):
     
     app.state.rails = None
     await app.state.http_client.aclose()
+
 
 app = FastAPI(
     title="RPA autonomous agent microservice",
