@@ -97,7 +97,29 @@ Or run tests locally using pytest:
 pytest tests/unit/
 ```
 
-### 8. Clean up Cloud Resources (Optional)
+### 8. Secure Remote Access: Cloudflare Zero Trust Tunnel
+To securely expose the local FastAPI microservice for remote access, mobile testing, or Slack webhooks without opening ports on your firewall or having a public IP:
+
+1. **Option A: Instant Ad-hoc Quick Tunnel (No account needed):**
+   ```bash
+   cloudflared tunnel --url http://localhost:8080
+   ```
+   *Generates an instant, free public HTTPS address (`https://*.trycloudflare.com`) with DDoS protection and TLS encryption.*
+
+2. **Option B: Production Zero Trust Tunnel (Automated Script):**
+   ```bash
+   ./scripts/setup-cloudflare-tunnel.sh
+   ```
+   *Creates an outbound encrypted tunnel routing your configured custom domain directly to `localhost:8080` via Cloudflare's global edge network.*
+
+### 9. Interactive API Documentation (Swagger UI)
+Once the stack is running, access the interactive OpenAPI documentation:
+* **Local:** `http://localhost:8080/docs`
+* **Healthcheck:** `GET http://localhost:8080/api/health`
+* **Synchronous Task Execution:** `POST http://localhost:8080/api/task`
+* **Asynchronous Background Task:** `POST http://localhost:8080/api/task/async`
+
+### 10. Clean up Cloud Resources (Optional)
 When you are done and want to tear down all Azure infrastructure to avoid costs:
 
 ```bash
@@ -105,6 +127,7 @@ cd src/infrastructure/templates
 terraform destroy
 cd ../../..
 ```
+
 
 ---
 
