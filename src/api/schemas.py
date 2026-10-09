@@ -32,3 +32,20 @@ class AgentResponse(BaseModel):
         default_factory=list,
         description="List of source documents referenced by the agent",
     )
+
+
+class AsyncTaskResponse(BaseModel):
+    """Returned when a task is accepted for background execution."""
+
+    task_id: str
+    status: str = "queued"
+    message: str = "Task queued for background execution"
+
+
+class TaskStatusResponse(BaseModel):
+    """Returned when querying the status of a background agent task."""
+
+    task_id: str
+    status: str
+    result: str | None = None
+    error: str | None = None
