@@ -1,8 +1,9 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from src.agent.guardrails.actions.check_hallucination import check_hallucination_action
+import pytest
+
 from src.agent.graph import agent_app
+from src.agent.guardrails.actions.check_hallucination import check_hallucination_action
 
 
 @pytest.mark.asyncio
@@ -52,7 +53,7 @@ async def test_agent_graph_executes_with_document_content() -> None:
     }
 
     with patch("src.agent.graph.graph_nodes.llm") as mock_llm:
-        from src.core.models import GroundReviewResponse, SecurityLexResponse, CriticAnalyzeResponse
+        from src.core.models import CriticAnalyzeResponse, GroundReviewResponse, SecurityLexResponse
 
         mock_ground = GroundReviewResponse(
             extracted_clauses=["§ 1 Przedmiot umowy"],

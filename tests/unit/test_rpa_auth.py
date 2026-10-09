@@ -1,11 +1,12 @@
 import pyotp
 import pytest
+
 from src.rpa.auth.totp_service import TOTPAuthService
 from src.rpa.browser.portal_automation import (
-    LegalPortalAutomation,
-    PortalAutomationError,
-    PortalAuthenticationError,
     CaseNotFoundError,
+    LegalPortalAutomation,
+    PortalAuthenticationError,
+    PortalAutomationError,
 )
 
 
@@ -22,13 +23,15 @@ def test_totp_generation_and_verification() -> None:
     assert service.verify_totp("999999") is False
 
 
-def test_totp_service_raises_when_no_secret() -> None:
-    service = TOTPAuthService(secret_name="NonExistentSecret12345", fallback_secret=None)
+def test_totp_service_raises_when_no_secret(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("PORTAL_2FA_SECRET", raising=False)
+    service = TOTPAuthService(secret_name="NonExistentSecret12345", fallback_secret="")
 
     with pytest.raises(ValueError) as exc_info:
         service.get_totp_secret()
 
     assert "TOTP secret not found" in str(exc_info.value)
+
 
 
 def test_legal_portal_automation_init() -> None:

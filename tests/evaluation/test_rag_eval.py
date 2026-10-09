@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from src.rag.models import SearchResultChunk
 
 
@@ -12,7 +13,7 @@ def compute_hit_rate_at_k(
     hits = 0
     total = len(expected_articles)
 
-    for results, expected in zip(ranked_results, expected_articles):
+    for results, expected in zip(ranked_results, expected_articles, strict=False):
         top_k_chunks = results[:k]
         matched = any(expected.lower() in (chunk.article_number or "").lower() for chunk in top_k_chunks)
         if matched:
@@ -28,7 +29,7 @@ def compute_mean_reciprocal_rank(
     """Computes Mean Reciprocal Rank (MRR) evaluating ranking quality of relevant items."""
     reciprocal_ranks: list[float] = []
 
-    for results, expected in zip(ranked_results, expected_articles):
+    for results, expected in zip(ranked_results, expected_articles, strict=False):
         found_rank = 0
         for rank, chunk in enumerate(results, start=1):
             if expected.lower() in (chunk.article_number or "").lower():
@@ -47,7 +48,7 @@ def test_eval_dataset_schema_and_size() -> None:
     dataset_path = Path(__file__).parent / "eval_dataset.json"
     assert dataset_path.exists()
 
-    with open(dataset_path, "r", encoding="utf-8") as f:
+    with open(dataset_path, encoding="utf-8") as f:
         data = json.load(f)
 
     assert len(data) >= 10

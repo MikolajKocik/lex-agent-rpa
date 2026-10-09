@@ -1,7 +1,9 @@
 import pytest
-from fastapi.testclient import TestClient
-from src.api.routers.agent import router as agent_router, _TASK_STORE
 from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+from src.api.routers.agent import _TASK_STORE
+from src.api.routers.agent import router as agent_router
 
 
 @pytest.fixture
