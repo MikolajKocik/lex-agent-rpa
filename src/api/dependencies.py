@@ -1,9 +1,9 @@
-from infrastructure.services.web_search_service import TavilySearchService, WebService
-from infrastructure.services.slack_service import SlackService, SlackWebhookService
-from infrastructure.email.ms_graph_client import EmailService, MSGraphEmailClient
-from infrastructure.services.agent_service import GraphService
+from src.infrastructure.services.web_search_service import TavilySearchService, WebService
+from src.infrastructure.services.slack_service import SlackService, SlackWebhookService
+from src.infrastructure.email.ms_graph_client import EmailService, MSGraphEmailClient
+from src.infrastructure.services.agent_service import GraphService
 
-from agent.tools.agent_tools import create_agent_tools
+from src.agent.tools.agent_tools import create_agent_tools
 from fastapi import Depends, Request
 import httpx
 from nemoguardrails import Guardrails
@@ -21,7 +21,6 @@ def get_graph_service(request: Request) -> GraphService:
     """Returns initialized GraphService."""
     return GraphService(rails=request.app.state.rails)
 
-# dedicated services
 def get_web_search_service(
     client: httpx.AsyncClient = Depends(get_http_client),
 ) -> WebService:

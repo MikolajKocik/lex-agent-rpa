@@ -30,14 +30,14 @@ INSERT_DOCUMENT_QUERY = """
 ATTACHMENTS_DIR = Path("downloads/attachments")
 
 
-@tool(_handle_tool_error=True)
+@tool
 @log_execution()
 def extract_text_from_pdf_tool(file_path: str) -> str:
     """Extracts raw text content from a local PDF document located at the given path."""
     return extract_text_from_pdf_file(file_path)
 
 
-@tool(_handle_tool_error=True)
+@tool
 @log_execution()
 async def search_legal_database_tool(query: str, top_k: int = 5) -> str:
     """Searches indexed legal acts and statutory articles using hybrid dense and sparse retrieval with RRF."""
@@ -46,7 +46,7 @@ async def search_legal_database_tool(query: str, top_k: int = 5) -> str:
     return format_rag_context(results)
 
 
-@tool(_handle_tool_error=True)
+@tool
 @log_execution()
 async def download_court_case_document_tool(case_signature: str) -> str:
     """Downloads a court case document PDF from the legal portal via automated headless RPA with 2FA and saves it."""
@@ -57,7 +57,7 @@ async def download_court_case_document_tool(case_signature: str) -> str:
     return f"Dokument sprawy {case_signature} zostal pomyslnie pobrany i zarchiwizowany w chmurze Azure Blob: {blob_url}"
 
 
-@tool(_handle_tool_error=True)
+@tool
 @log_execution()
 async def search_postgres_database_tool(search_term: str) -> list | str:
     """
@@ -73,7 +73,7 @@ async def search_postgres_database_tool(search_term: str) -> list | str:
     return [{**dict(r), "id": str(r["id"])} for r in rows]
 
 
-@tool(_handle_tool_error=True)
+@tool
 @log_execution()
 async def save_opinion_to_drive_tool(
     file_name: str,
@@ -104,7 +104,7 @@ async def save_opinion_to_drive_tool(
 def create_download_email_attachment_tool(email_service: EmailService) -> BaseTool:
     """Factory creating download_email_attachment_tool with injected EmailService."""
 
-    @tool(_handle_tool_error=True)
+    @tool
     @log_execution()
     async def download_email_attachment_tool(subject_filter: str | None = None) -> dict | str:
         """
@@ -133,7 +133,7 @@ def create_download_email_attachment_tool(email_service: EmailService) -> BaseTo
 def create_send_slack_notification_tool(slack_service: SlackService) -> BaseTool:
     """Factory creating send_slack_notification_tool with injected SlackService."""
 
-    @tool(_handle_tool_error=True)
+    @tool
     @log_execution()
     async def send_slack_notification_tool(message: str) -> str:
         """Sends a notification or alert to a dedicated Slack channel via webhook."""
@@ -145,7 +145,7 @@ def create_send_slack_notification_tool(slack_service: SlackService) -> BaseTool
 def create_search_web_tool(search_service: WebService) -> BaseTool:
     """Factory creating search_web_tool with injected WebService."""
 
-    @tool(_handle_tool_error=True)
+    @tool
     @log_execution()
     async def search_web_tool(query: str) -> str:
         """
