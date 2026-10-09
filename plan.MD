@@ -52,18 +52,19 @@ System asystenta prawnego oparty na architekturze agentowej, automatyzacji proce
 
 ## Faza 3: Moduł Hybrid RAG (Domena Prawna)
 
-- [ ] **Baza danych wektorowa:**
+- [x] **Baza danych wektorowa:**
   - [x] Włączenie rozszerzenia `pgvector` w PostgreSQL oraz schemat `template.sql`.
-  - [ ] Modele danych SQLAlchemy / SQLModel dla aktów prawnych i fragmentów tekstowych (chunków).
-  - [ ] Pipeline przetwarzania integrujący Azure Blob Storage z bazą danych (ekstrakcja tekstu i wektoryzacja).
-- [ ] **Parser aktów prawnych (ISAP) (`src/rag/parsers/`):**
-  - [ ] Parser strukturalny dzielący akty prawne na jednostki redakcyjne (Dział, Rozdział, Artykuł, Paragraf, Ustęp).
-  - [ ] Ekstrakcja metadanych: numer artykułu, data publikacji, status prawny, sygnatura aktu.
-- [ ] **Silnik hybrydowego wyszukiwania (`src/rag/`):**
-  - [ ] Generowanie embeddingów dla chunków prawnych (`src/rag/embeddings/`).
-  - [ ] Wyszukiwanie semantyczne (podobieństwo cosinusowe z indeksem HNSW w pgvector).
-  - [ ] Wyszukiwanie leksykalne (Full-Text Search PostgreSQL z indeksem GIN).
-  - [ ] Hybrydowy retriever (`src/rag/retrievers/`) łączący wyniki za pomocą Reciprocal Rank Fusion (RRF).
+  - [x] Modele danych Pydantic dla aktów prawnych i fragmentów tekstowych (chunków) (`src/rag/models.py`).
+  - [x] Pipeline przetwarzania integrujący Azure Blob Storage z bazą danych (ekstrakcja tekstu i wektoryzacja) (`src/rag/ingestion.py`).
+- [x] **Parser aktów prawnych (ISAP) (`src/rag/parsers/`):**
+  - [x] Parser strukturalny dzielący akty prawne na jednostki redakcyjne (Dział, Rozdział, Artykuł, Paragraf, Ustęp) (`isap_parser.py`).
+  - [x] Ekstrakcja metadanych: numer artykułu, data publikacji, status prawny, sygnatura aktu.
+  - [x] Moduł ekstrakcji tekstu z plików PDF (`pdf_extractor.py`).
+- [x] **Silnik hybrydowego wyszukiwania (`src/rag/`):**
+  - [x] Generowanie embeddingów dla chunków prawnych (`src/rag/embeddings/legal_embedder.py`).
+  - [x] Wyszukiwanie semantyczne (podobieństwo cosinusowe z indeksem HNSW w pgvector).
+  - [x] Wyszukiwanie leksykalne (Full-Text Search / Trigram GIN w PostgreSQL).
+  - [x] Hybrydowy retriever (`src/rag/retrievers/hybrid_retriever.py`) łączący wyniki za pomocą Reciprocal Rank Fusion (RRF).
 
 ---
 
