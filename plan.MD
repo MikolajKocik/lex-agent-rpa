@@ -81,17 +81,18 @@ System asystenta prawnego oparty na architekturze agentowej, automatyzacji proce
 
 ---
 
-## Faza 5: Warstwa API, Interfejs i Bezpieczny Dostęp
+## Faza 5: Warstwa API i Bezpieczny Dostęp Zdalny
 
-- [ ] **Warstwa API (FastAPI) (`src/api/`):**
+- [x] **Warstwa API (FastAPI) (`src/api/`):**
   - [x] Modele żądań i odpowiedzi Pydantic (`schemas.py`).
   - [x] Endpoint monitorowania stanu usługi (`GET /health`).
-  - [ ] Główny endpoint orkiestratora (`POST /task`) z obsługą kolejkowania i zadań w tle (Background Tasks / Celery / ARQ).
+  - [x] Główny endpoint orkiestratora (`POST /task`) z obsługą kolejkowania i zadań w tle (`POST /task/async` oraz `GET /task/{task_id}`).
+  - [x] Interaktywna dokumentacja API w standardzie OpenAPI / Swagger UI (`/docs`).
 - [x] **Integracja z Azure Blob Storage (`src/infrastructure/blob/`):**
   - [x] Asynchroniczny klient do bezpiecznego przesyłania i pobierania plików (`upload_document_to_blob`, `download_document_from_blob`).
-- [ ] **Interfejs użytkownika i dostęp zdalny:**
-  - [ ] Integracja panelu użytkownika (Open WebUI lub dedykowany interfejs webowy).
-  - [ ] Konfiguracja bezpiecznego tunelu Cloudflare Zero Trust (Tunnels) lub Tailscale do komunikacji bez wystawiania publicznego adresu IP.
+- [x] **Bezpieczny dostęp zdalny:**
+  - [x] Skrypt bezpiecznego tunelu Cloudflare Zero Trust bez publicznego adresu IP (`scripts/setup-cloudflare-tunnel.sh`).
+
 
 ---
 
