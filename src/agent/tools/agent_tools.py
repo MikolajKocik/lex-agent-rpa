@@ -4,11 +4,15 @@ from src.infrastructure.services.slack_service import SlackService, SlackWebhook
 from src.infrastructure.email.ms_graph_client import EmailService, MSGraphEmailClient
 from src.infrastructure.blob.client import upload_document_to_blob
 
+from src.rag.parsers.pdf_extractor import extract_text_from_pdf_file
+from src.rag.retrievers.hybrid_retriever import HybridLegalRetriever, format_rag_context
+
 from src.core.decorators import log_execution
 from langchain_core.tools import tool, BaseTool
 from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 import httpx
 from pathlib import Path
+
 
 _embeddings = NVIDIAEmbeddings()
 
@@ -26,16 +30,20 @@ INSERT_DOCUMENT_QUERY = """
 ATTACHMENTS_DIR = Path("downloads/attachments")
 
 
-@tool
+@tool(_handle_tool_error=True)
 @log_execution()
-def extract_text_from_pdf_tool():
-    pass
+def extract_text_from_pdf_tool(file_path: str) -> str:
+    """Extracts raw text content from a local PDF document located at the given path."""
+    return extract_text_from_pdf_file(file_path)
 
 
-@tool
+@tool(_handle_tool_error=True)
 @log_execution()
-def search_legal_database_tool():
-    pass
+async def search_legal_database_tool(query: str, top_k: int = 5) -> str:
+    """Searches indexed legal acts and statutory articles using hybrid dense and sparse retrieval with RRF."""
+    retriever = HybridLegalRetriever()
+    results = await retriever.search_hybrid(query=query, top_k=top_k)
+    return format_rag_context(results)
 
 
 @tool(_handle_tool_error=True)
