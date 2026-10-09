@@ -1,6 +1,8 @@
-import pytest
 import httpx
+import pytest
+
 from src.infrastructure.services.web_search_service import TavilySearchService
+
 
 @pytest.mark.asyncio
 async def test_live_search_duckduckgo_returns_valid_results():

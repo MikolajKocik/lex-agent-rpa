@@ -1,9 +1,10 @@
 import io
+
 from pypdf import PdfWriter
 
+from src.rag.models import SearchResultChunk
 from src.rag.parsers.isap_parser import extract_act_signature, parse_legal_act_into_chunks
 from src.rag.parsers.pdf_extractor import extract_text_from_pdf_bytes
-from src.rag.models import SearchResultChunk
 from src.rag.retrievers.hybrid_retriever import format_rag_context
 
 

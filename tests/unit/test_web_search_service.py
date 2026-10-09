@@ -1,7 +1,10 @@
-import pytest
-import httpx
 from unittest.mock import AsyncMock, MagicMock
+
+import httpx
+import pytest
+
 from src.infrastructure.services.web_search_service import TavilySearchService
+
 
 @pytest.fixture
 def mock_httpx_client():
