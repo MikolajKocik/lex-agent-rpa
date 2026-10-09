@@ -28,6 +28,7 @@ dependencies = [
     "asyncpg>=0.32.0",
     "azure-identity>=1.26.0",
     "azure-keyvault-secrets>=4.11.3",
+    "pypdf>=4.0.0",
 ]
 
 [project.optional-dependencies]
