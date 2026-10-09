@@ -1,61 +1,54 @@
 import httpx
 from src.core.decorators import http_retry, log_execution
 from typing import Protocol
+from src.infrastructure.keyvault.client import TAVILY_API_KEY
 
 class WebService(Protocol):
     async def __call__(self, query: str) -> str: ...
 
-class DuckDuckGoService:
-    def __init__(self, client: httpx.AsyncClient, max_results=5) -> None:
+class TavilySearchService:
+    def __init__(self, client: httpx.AsyncClient, max_results=5, api_key: str = None) -> None:
         self.client = client
         self.max_results = max_results
+        self.api_key = api_key or TAVILY_API_KEY
+        if not self.api_key:
+            raise ValueError("TAVILY_API_KEY from KeyVault is missing.")
 
     def __str__(self):
-        return "GraphService(AI Agent Engine)"
+        return "TavilySearchService(AI Agent Web Search Engine)"
     
     def __repr__(self):
-        """
-        Defines which rail object a service has right now 
-        """
-        return f"GraphService(rails={self.rails.__class__.__name__})"
+        return f"TavilySearchService(rails={self.rails.__class__.__name__})" if hasattr(self, "rails") else "TavilySearchService()"
 
     @log_execution()
     @http_retry
     async def _search(self, query: str) -> list[dict]:
         """
-        Web search using DuckDuckGo browser with no tracking and block ads
+        Web search using Tavily API, specifically built for LLMs and Agents.
         """
-        params = {
-            "q": query,
-            "format": "json",
-            "no_html": "1",
-            "skip_disambig": "1",
+        payload = {
+            "api_key": self.api_key,
+            "query": query,
+            "search_depth": "basic",
+            "max_results": self.max_results
         }
 
-        response = await self.client.get(
-            "https://api.duckduckgo.com/",
-            params=params
+        response = await self.client.post(
+            "https://api.tavily.com/search",
+            json=payload
         )
         response.raise_for_status()
 
         data = response.json()
-        raw_topics = data.get("RelatedTopics", [])
+        raw_results = data.get("results", [])
 
         results: list[dict] = []
-        for item in raw_topics:
-            if "Topics" in item:
-                for sub_item in item["Topics"]:
-                    results.append({
-                        "title": sub_item.get("Text", "").split(" - ")[0],
-                        "snippet": sub_item.get("Text", ""),
-                        "url": sub_item.get("FirstURL", ""),
-                    })
-            elif "Text" in item:
-                results.append({
-                    "title": item.get("Text", "").split(" - ")[0],
-                    "snippet": item.get("Text", ""),
-                    "url": item.get("FirstURL", ""),
-                })
+        for item in raw_results:
+            results.append({
+                "title": item.get("title", ""),
+                "snippet": item.get("content", ""), 
+                "url": item.get("url", ""),
+            })
             
             if len(results) >= self.max_results:
                 break
@@ -73,10 +66,9 @@ class DuckDuckGoService:
 
         for idx, item in enumerate(raw_results, start=1):
             title = item.get("title", "No Title")
-            snippet = item.get("body", item.get("snippet", ""))
-            url = item.get("href", item.get("link", ""))
+            snippet = item.get("snippet", "")
+            url = item.get("url", "")
 
-            # use literal concatenation for concatenate strings
             entry = (
                 f"Result [{idx}]:\n"
                 f"Title: {title}\n"

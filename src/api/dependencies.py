@@ -1,10 +1,10 @@
-from src.infrastructure.services.web_search_service import DuckDuckGoService
+from src.infrastructure.services.web_search_service import TavilySearchService
 from src.infrastructure.services.web_search_service import WebService
 from fastapi import Depends, Request
 import httpx
 from nemoguardrails import Guardrails
 
-from infrastructure.services.agent_services import GraphService
+from infrastructure.services.agent_service import GraphService
 
 def get_guardrails(request: Request) -> Guardrails:
     """Returns initialized guardrails instance from app state."""
@@ -21,4 +21,4 @@ def get_graph_service(request: Request) -> GraphService:
 def get_web_search_service(
     client: httpx.AsyncClient = Depends(get_http_client),
 ) -> WebService:
-    return DuckDuckGoService(client=client, max_results=5)
+    return TavilySearchService(client=client, max_results=5)
