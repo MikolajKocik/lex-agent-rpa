@@ -1,0 +1,62 @@
+[
+  {
+    "id": "tc-01",
+    "query": "Jaki jest limit urlopu na żądanie w roku kalendarzowym?",
+    "expected_article": "Art. 167",
+    "ground_truth_snippet": "Pracodawca jest obowiązany udzielić na żądanie pracownika nie więcej niż 4 dni urlopu."
+  },
+  {
+    "id": "tc-02",
+    "query": "Kiedy pracodawca może rozwiązać umowę bez wypowiedzenia z winy pracownika?",
+    "expected_article": "Art. 52",
+    "ground_truth_snippet": "Ciężkie naruszenie przez pracownika podstawowych obowiązków pracowniczych."
+  },
+  {
+    "id": "tc-03",
+    "query": "Jaka jest definicja danych osobowych zgodnie z RODO?",
+    "expected_article": "Art. 4",
+    "ground_truth_snippet": "Informacje o zidentyfikowanej lub możliwej do zidentyfikowania osobie fizycznej."
+  },
+  {
+    "id": "tc-04",
+    "query": "Kto jest organem nadzorczym w Polsce w sprawach ochrony danych osobowych?",
+    "expected_article": "Art. 34",
+    "ground_truth_snippet": "Prezes Urzędu Ochrony Danych Osobowych."
+  },
+  {
+    "id": "tc-05",
+    "query": "Czym jest swoboda umów w polskim prawie cywilnym?",
+    "expected_article": "Art. 353",
+    "ground_truth_snippet": "Strony zawierające umowę mogą ułożyć stosunek prawny według swego uznania."
+  },
+  {
+    "id": "tc-06",
+    "query": "Jaki jest termin przedawnienia roszczeń o świadczenia okresowe?",
+    "expected_article": "Art. 118",
+    "ground_truth_snippet": "Dla roszczeń o świadczenia okresowe oraz związanych z prowadzeniem działalności termin wynosi 3 lata."
+  },
+  {
+    "id": "tc-07",
+    "query": "Czy umowa o pracę wymaga formy pisemnej?",
+    "expected_article": "Art. 29",
+    "ground_truth_snippet": "Umowę o pracę zawiera się na piśmie."
+  },
+  {
+    "id": "tc-08",
+    "query": "Kiedy dłużnik popada w zwłokę?",
+    "expected_article": "Art. 476",
+    "ground_truth_snippet": "Dłużnik dopuszcza się zwłoki, gdy nie spełnia świadczenia w terminie."
+  },
+  {
+    "id": "tc-09",
+    "query": "Jakie są przesłanki odpowiedzialności odszkodowawczej z tytułu czynu niedozwolonego?",
+    "expected_article": "Art. 415",
+    "ground_truth_snippet": "Kto z winy swej wyrządził drugiemu szkodę, obowiązany jest do jej naprawienia."
+  },
+  {
+    "id": "tc-10",
+    "query": "W jakim terminie konsument może odstąpić od umowy zawartej na odległość?",
+    "expected_article": "Art. 27",
+    "ground_truth_snippet": "Konsument, który zawarł umowę na odległość, może w terminie 14 dni odstąpić od niej bez podawania przyczyny."
+  }
+]

@@ -2,13 +2,12 @@ from nemoguardrails.actions import action
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_core.output_parsers import StrOutputParser
 
-from agent.utils.agent_utils import load_prompt
+from src.agent.utils.agent_utils import load_prompt
 import logging
 
 log = logging.getLogger(__name__)
 
-
-EVALUATOR_PROMPT = load_prompt(file_name="evaluator_prompt", p_count=3, version=1)
+EVALUATOR_PROMPT = load_prompt(file_name="evaluator_prompt", version=1)
 
 @action(name="check_hallucination_action")
 async def check_hallucination_action(context: dict, bot_response: str) -> bool:

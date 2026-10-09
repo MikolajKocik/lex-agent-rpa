@@ -98,15 +98,17 @@ System asystenta prawnego oparty na architekturze agentowej, automatyzacji proce
 
 ## Faza 6: Testowanie, Ewaluacja i Zapewnienie Jakości (QA)
 
-- [ ] **Testy jednostkowe (Pytest):**
-  - [x] Testy jednostkowe usług wyszukiwania i integracji (`tests/unit/`).
-  - [ ] Testy jednostkowe parserów strukturalnych RAG (`src/rag/parsers/`).
-  - [ ] Izolowane testy węzłów grafu z wykorzystaniem mocków API LLM.
-  - [ ] Testy generatora kodów 2FA dla modułu RPA.
-- [ ] **Testy integracyjne:**
-  - [x] Testy integracyjne serwisów zewnętrznych (`tests/integration/`).
-  - [ ] Walidacja pełnego łańcucha operacyjnego: RPA -> Blob Storage -> Wektoryzacja Postgres -> Graf LangGraph -> Endpoint FastAPI.
-  - [ ] Weryfikacja skuteczności NeMo Guardrails w blokowaniu wycieków PII oraz halucynacji.
-- [ ] **Ewaluacja jakościowa (LLM-as-a-judge):**
-  - [ ] Przygotowanie referencyjnego zbioru ewaluacyjnego (10-20 umów i spraw prawnych).
-  - [ ] Ocena dokładności ekstrakcji klauzul i retrievalu (metryki Hit-Rate, MRR).
+- [x] **Testy jednostkowe (Pytest):**
+  - [x] Testy jednostkowe usług wyszukiwania i integracji (`tests/unit/test_web_search_service.py`).
+  - [x] Testy jednostkowe parserów strukturalnych RAG (`tests/unit/test_rag_pipeline.py`).
+  - [x] Izolowane testy węzłów grafu z wykorzystaniem mocków API LLM (`tests/unit/test_graph_nodes.py`).
+  - [x] Testy generatora kodów 2FA dla modułu RPA (`tests/unit/test_rpa_auth.py`).
+  - [x] Testy jednostkowe endpointów API FastAPI (`tests/unit/test_api_endpoints.py`).
+- [x] **Testy integracyjne:**
+  - [x] Testy integracyjne serwisów zewnętrznych (`tests/integration/test_web_search_service_integration.py`).
+  - [x] Walidacja pełnego łańcucha operacyjnego: RPA -> Blob Storage -> Wektoryzacja Postgres -> Graf LangGraph -> Endpoint FastAPI (`tests/integration/test_guardrails_and_pipeline.py`).
+  - [x] Weryfikacja skuteczności NeMo Guardrails w blokowaniu wycieków PII oraz halucynacji (`test_guardrails_and_pipeline.py`).
+- [x] **Ewaluacja jakościowa (LLM-as-a-judge):**
+  - [x] Przygotowanie referencyjnego zbioru ewaluacyjnego aktów i pytań prawnych (`tests/evaluation/eval_dataset.json`).
+  - [x] Ocena dokładności ekstrakcji klauzul i retrievalu za pomocą metryk Hit-Rate@K oraz Mean Reciprocal Rank (MRR) (`tests/evaluation/test_rag_eval.py`).
+
