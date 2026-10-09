@@ -3,6 +3,13 @@
 
 # python files
 __pycache__
+venv
+.env
+
+# build artifacts
+dist/
+build/
+*.egg-info/
 
 # Terraform
 **/.terraform/*
@@ -16,3 +23,5 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+notes

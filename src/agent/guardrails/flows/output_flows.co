@@ -32,6 +32,3 @@ define flow check fact checking
     bot refuse due to hallucination
     stop
 
-# anonimizacja PII na wyjściu 
-define flow check pii output
-  $bot_message = execute scrub_pii_action(text=$bot_message)

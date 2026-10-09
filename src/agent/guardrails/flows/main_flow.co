@@ -21,7 +21,7 @@ define user ask financial advice
 define bot refuse financial advice
   "Przykro mi, ale jestem asystentem prawnym. Nie udzielam porad finansowych ani inwestycyjnych. Skontaktuj się z doradcą finansowym."
 
-# główne flow i zatrzymanie konwersacji
+# zatrzymanie konwersacji jeśli napotka na porady
 define flow check restricted topics
   user ask medical advice
   bot refuse medical advice
@@ -30,3 +30,18 @@ define flow check restricted topics
   user ask financial advice
   bot refuse financial advice
   stop
+
+# główny przepływ serwisu
+define user ask for rpa task
+  "przeanalizuj umowę"
+  "zrób zadanie"
+  "wykonaj proces"
+  "przenieś pliki"
+  "zbadaj dokument"
+
+define flow handle rpa task
+  user ask for rpa task
+  
+  $agent_result = execute run_langgraph_agent
+
+  bot $agent_result

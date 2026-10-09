@@ -1,11 +1,27 @@
+import logging
+
+from langdetect import detect
 from nemoguardrails.actions import action
+
+log = logging.getLogger(__name__)
 
 @action(name="check_polish_language_action")
 async def check_polish_language_action(bot_response: str) -> bool:
     """
-    Weryfikuje, czy wygenerowana odpowiedź jest w języku polskim.
+    Verify, whether the response is generated in polish as native or not.
     
-    Zwraca:
-        bool: True (język polski), False (inny język).
+    Returns:
+        bool: True (if polish), False (other language).
     """
-    pass
+    if not bot_response or not bot_response.strip():
+        return True 
+        
+    try:        
+        lang = detect(bot_response)
+        return lang == 'pl'
+    except ImportError:
+        log.error("Library 'langdetect' not found")
+        return True 
+    except Exception as e:
+        log.warning(f"Nie udało się wykryć języka: {e}")
+        return True

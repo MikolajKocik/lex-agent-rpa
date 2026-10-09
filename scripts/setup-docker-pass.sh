@@ -5,16 +5,21 @@ echo "==> Instalowanie pass, gnupg oraz golang-docker-credential-helpers..."
 sudo apt update
 sudo apt install -y pass gnupg golang-docker-credential-helpers
 
-# change template for your data
+# get user data
+read -p "Podaj swoje imię lub nazwę (np. Jan Kowalski): " USER_NAME
+read -p "Podaj swój adres email (np. jan@kowalski.pl): " USER_EMAIL
+read -sp "Podaj hasło do klucza GPG: " USER_PASSPHRASE
+echo
+
 KEY_DETAILS_FILE=$(mktemp)
 cat <<EOF > "$KEY_DETAILS_FILE"
 Key-Type: RSA
 Key-Length: 4096
 Key-Usage: sign,encrypt
-Name-Real: mkocik
-Name-Email: mikolajkocik@onet.pl
+Name-Real: ${USER_NAME}
+Name-Email: ${USER_EMAIL}
 Expire-Date: 3m
-Passphrase: SuperTajneHaslo321
+Passphrase: ${USER_PASSPHRASE}
 %commit
 EOF
 
@@ -23,7 +28,7 @@ gpg --batch --generate-key "$KEY_DETAILS_FILE"
 rm -f "$KEY_DETAILS_FILE"
 
 # download generated key id
-KEY_ID=$(gpg --list-secret-keys --keyid-format LONG "mikolajkocik@onet.pl" | grep -E '^sec' | awk '{print $2}' | cut -d'/' -f2)
+KEY_ID=$(gpg --list-secret-keys --keyid-format LONG "${USER_EMAIL}" | grep -E '^sec' | awk '{print $2}' | cut -d'/' -f2)
 
 if [ -z "$KEY_ID" ]; then
     echo "Błąd: Nie udało się odnaleźć ID klucza GPG."
@@ -63,4 +68,4 @@ else
 EOF
 fi
 
-echo "==> Configuration completed successfully!"
+echo "==> Konfiguracja przebiegła pomyślnie!"

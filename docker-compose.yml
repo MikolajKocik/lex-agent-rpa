@@ -5,7 +5,8 @@ services:
     volumes:
       - type: bind
         source: ./src
-        target: /app
+    env_file:
+      - .env
     environment:
       - NVIDIA_API_KEY=${NVIDIA_API_KEY}
       - DATABASE_URL=postgresql+asyncpg://lex_user:${POSTGRES_PASSWORD:?Error POSTGRES_PASSWORD not set}@db:5432/lex_agent_db
@@ -15,6 +16,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./src/infrastructure/database/template.sql:/docker-entrypoint-initdb.d/init.sql:ro
     environment:
       - POSTGRES_USER=lex_user
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Error POSTGRES_PASSWORD not set}
