@@ -1,5 +1,6 @@
 from nemoguardrails.actions import action
 
+
 @action(name="check_jailbreak", is_system_action=False)
 async def check_jailbreak(context: dict) -> bool:
     """

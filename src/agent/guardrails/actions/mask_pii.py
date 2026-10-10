@@ -1,7 +1,7 @@
 import logging
 
 from nemoguardrails.actions import action
-from presidio_analyzer import AnalyzerEngine, PatternRecognizer, Pattern
+from presidio_analyzer import AnalyzerEngine, Pattern, PatternRecognizer
 from presidio_anonymizer import AnonymizerEngine
 
 log = logging.getLogger(__name__)

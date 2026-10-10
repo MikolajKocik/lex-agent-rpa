@@ -1,5 +1,5 @@
-from collections import defaultdict
 import asyncio
+from collections import defaultdict
 
 from src.infrastructure.database.db import get_postgres_connection
 from src.rag.embeddings.legal_embedder import LegalEmbedder

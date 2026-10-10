@@ -3,13 +3,10 @@ from pathlib import Path
 
 import httpx
 from fastapi import FastAPI
-
+from langchain_google_genai import ChatGoogleGenerativeAI
 from nemoguardrails import Guardrails, RailsConfig
 from nemoguardrails.actions import action
 from nemoguardrails.llm.providers import register_chat_provider
-
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_google_genai import ChatGoogleGenerativeAI
 
 from src.agent.graph import agent_app
 from src.api.routers.agent import router as agent_router
