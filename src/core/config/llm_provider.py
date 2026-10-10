@@ -1,3 +1,4 @@
+import os
 from typing import Protocol
 
 from langchain_core.language_models import BaseChatModel
@@ -10,9 +11,11 @@ class LLMProvider(Protocol):
 
 class GoogleLLMProvider:
     def __init__(self, temperature: float = 0.0):
+        api_key = os.getenv("GOOGLE_API_KEY", "dummy_key_for_tests")
         self._model = ChatGoogleGenerativeAI(
             model="gemini-3.5-flash-lite",
-            temperature=temperature
+            temperature=temperature,
+            api_key=api_key
         )
     
     @property
