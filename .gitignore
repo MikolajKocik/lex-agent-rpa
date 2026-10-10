@@ -1,6 +1,3 @@
-# IDE
-.vscode
-
 # python files
 __pycache__
 venv
