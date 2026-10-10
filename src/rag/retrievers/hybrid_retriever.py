@@ -1,4 +1,5 @@
 from collections import defaultdict
+import asyncio
 
 from src.infrastructure.database.db import get_postgres_connection
 from src.rag.embeddings.legal_embedder import LegalEmbedder
@@ -29,7 +30,7 @@ SPARSE_SEARCH_QUERY = """
         similarity(c.content, $1) AS score
     FROM legal_chunks c
     LEFT JOIN legal_acts a ON c.act_id = a.id
-    WHERE c.content % $1 OR c.content ILIKE ('%' || $1 || '%')
+    WHERE similarity(c.content, $1) > 0.1
     ORDER BY score DESC
     LIMIT $2;
 """
@@ -81,8 +82,10 @@ class HybridLegalRetriever:
 
     async def search_hybrid(self, query: str, top_k: int = 5) -> list[SearchResultChunk]:
         """Executes both dense and sparse searches and fuses their rankings using Reciprocal Rank Fusion."""
-        dense_results = await self.search_dense(query, limit=top_k * 2)
-        sparse_results = await self.search_sparse(query, limit=top_k * 2)
+        dense_results, sparse_results = await asyncio.gather(
+            self.search_dense(query, limit=top_k * 2),
+            self.search_sparse(query, limit=top_k * 2)
+        )
 
         rrf_scores: dict[str, float] = defaultdict(float)
         chunk_map: dict[str, SearchResultChunk] = {}
