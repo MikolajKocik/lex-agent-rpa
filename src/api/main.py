@@ -3,13 +3,23 @@ from pathlib import Path
 
 import httpx
 from fastapi import FastAPI
+
 from nemoguardrails import Guardrails, RailsConfig
 from nemoguardrails.actions import action
+from nemoguardrails.llm.providers import register_chat_provider
+
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from src.agent.graph import agent_app
 from src.api.routers.agent import router as agent_router
 from src.api.routers.search import router as search_router
 
+
+def _get_google_chat(**kwargs):
+    return ChatGoogleGenerativeAI(**kwargs)
+
+register_chat_provider("google", _get_google_chat)
 
 @action(is_system_action=True, name="run_langgraph_agent")
 async def run_langgraph_agent(context: dict):

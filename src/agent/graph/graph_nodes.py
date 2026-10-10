@@ -2,7 +2,7 @@ from typing import cast
 
 from src.agent.tools import search_web_tool, send_slack_notification_tool
 from src.agent.utils.agent_utils import load_prompt
-from src.core.config.llm_provider import NvidiaLLMProvider
+from src.core.config.llm_provider import GoogleLLMProvider
 from src.core.models import (
     CriticAnalyzeResponse,
     GroundReviewResponse,
@@ -11,7 +11,7 @@ from src.core.models import (
 
 from .graph_states import AgentState
 
-nvidia_provider = NvidiaLLMProvider(temperature=0.1)
+nvidia_provider = GoogleLLMProvider(temperature=0.1)
 llm = nvidia_provider.model
 
 

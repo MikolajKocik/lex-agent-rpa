@@ -1,14 +1,16 @@
 models:
   - type: main
-    engine: nim
-    model: deepseek-ai/deepseek-v4.1-flash
-    api_key_env_var: NVIDIA_API_KEY
-
+    engine: openai
+    model: gemini-3.5-flash-lite
+    api_key_env_var: GOOGLE_API_KEY
+    parameters:
+      base_url: "https://generativelanguage.googleapis.com/v1beta/openai/"
 rails:
   input:
     flows:
       - mask sensitive data on input
       - check jailbreak
+      - check off topic
   output:
     flows:
       - check hallucinations
