@@ -39,9 +39,12 @@ define user ask for rpa task
   "przenieś pliki"
   "zbadaj dokument"
 
+define bot respond with agent result
+  "$agent_result"
+
 define flow handle rpa task
   user ask for rpa task
   
   $agent_result = execute run_langgraph_agent
 
-  bot $agent_result
+  bot respond with agent result

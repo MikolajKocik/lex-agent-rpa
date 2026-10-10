@@ -5,3 +5,9 @@ define flow check jailbreak
     bot refuse to respond
     stop
 
+define flow mask sensitive data on input
+  $result = execute mask_pii
+  $last_user_message = $result.last_user_message
+
+
+
