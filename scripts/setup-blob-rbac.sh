@@ -5,7 +5,7 @@ RESOURCE_GROUP="${AZURE_RESOURCE_GROUP:-lex-rpa-agent}"
 STORAGE_ACCOUNT="${AZURE_STORAGE_ACCOUNT:-lexrpaagentstorage}"
 
 echo "Pobieranie ID aktualnie zalogowanego użytkownika z Azure CLI..."
-USER_ID=$(az ad signed-in-user show --query id -o tsv)
+USER_ID=$(az ad signed-in-user show --query id -o tsv | tr -d '\r')
 
 if [ -z "$USER_ID" ]; then
     echo "Błąd: Nie udało się pobrać ID użytkownika. Upewnij się, że jesteś zalogowany ('az login')."
@@ -18,7 +18,7 @@ echo "Pobieranie ID konta Storage Account ($STORAGE_ACCOUNT)..."
 STORAGE_ID=$(az storage account show \
     --name "$STORAGE_ACCOUNT" \
     --resource-group "$RESOURCE_GROUP" \
-    --query id -o tsv)
+    --query id -o tsv | tr -d '\r')
 
 if [ -z "$STORAGE_ID" ]; then
     echo "Błąd: Nie znaleziono konta magazynu $STORAGE_ACCOUNT w grupie $RESOURCE_GROUP."
