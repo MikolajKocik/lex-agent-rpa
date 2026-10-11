@@ -1,3 +1,4 @@
+import os
 from typing import Protocol
 
 import httpx
@@ -13,7 +14,7 @@ class TavilySearchService:
     def __init__(self, client: httpx.AsyncClient, max_results=5, api_key: str = None) -> None:
         self.client = client
         self.max_results = max_results
-        self.api_key = api_key or TAVILY_API_KEY
+        self.api_key = api_key or os.getenv("TAVILY_API_KEY") or TAVILY_API_KEY
         if not self.api_key:
             raise ValueError("TAVILY_API_KEY from KeyVault is missing.")
 

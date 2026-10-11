@@ -1,3 +1,5 @@
+import os
+
 import pyotp
 import pytest
 
@@ -9,6 +11,7 @@ def mock_azure_credentials(monkeypatch):
     monkeypatch.setenv("AZURE_CLIENT_ID", "test-client-id")
     monkeypatch.setenv("AZURE_CLIENT_SECRET", "test-client-secret")
     monkeypatch.setenv("POSTGRES_PASSWORD", "test_password")
-    monkeypatch.setenv("TAVILY_API_KEY", "mock_tavily_key")
+    if not os.getenv("TAVILY_API_KEY"):
+        monkeypatch.setenv("TAVILY_API_KEY", "mock_tavily_key")
     monkeypatch.setenv("PORTAL_2FA_SECRET", pyotp.random_base32())
 
