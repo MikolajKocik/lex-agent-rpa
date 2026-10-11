@@ -1,21 +1,13 @@
 import io
 from pathlib import Path
 
-from pypdf import PdfReader
+from src.rag.generators.legal_generator import stream_clean_pdf_pages
 
 
 def extract_text_from_pdf_stream(stream: io.BytesIO) -> str:
     """Extracts raw text content from a binary stream of a PDF document."""
-    reader = PdfReader(stream)
-    pages_text: list[str] = []
-
-    for page in reader.pages:
-        extracted = page.extract_text()
-        if extracted:
-            pages_text.append(extracted.strip())
-
-    return "\n\n".join(pages_text).strip()
-
+    pages = stream_clean_pdf_pages(stream)
+    return "\n\n".join(pages)
 
 def extract_text_from_pdf_file(file_path: str | Path) -> str:
     """Extracts text content from a local PDF file on disk."""
