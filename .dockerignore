@@ -49,6 +49,5 @@ htmlcov/
 *.tfvars
 
 # Documentation & IDE
-README.md
 .vscode/
 .idea/
