@@ -15,7 +15,8 @@ class GoogleLLMProvider:
         self._model = ChatGoogleGenerativeAI(
             model="gemini-3.5-flash-lite",
             temperature=temperature,
-            api_key=api_key
+            api_key=api_key,
+            max_retries=6,
         )
     
     @property

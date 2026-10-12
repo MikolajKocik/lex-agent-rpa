@@ -295,3 +295,61 @@ Poniżej znajdują się rzeczywiste wyniki zapytań (JSON) wygenerowane przez sy
 }
 ```
 *(Brak danych w wektorowej bazie wiedzy spowodował, że LLM po prostu odmówił wygenerowania zmyślonych przepisów, co najpewniej ubrał w angielski komunikat `I cannot answer that based on the provided text`, ponownie trafiając w bezlitosny filtr językowy).*
+
+---
+
+## Ewaluacja RAG (Ragas Framework & Raporty Jakościowe)
+
+System zawiera dedykowany moduł ewaluacyjny [evals/eval.py](file:///c:/Users/PC/source/repos/lex-agent-rpa/evals/eval.py) oparty o framework **Ragas** oraz modele sędziowskie LLM-as-a-Judge (Google Gemini). Moduł ten automatycznie weryfikuje jakość całego łańcucha RAG z rozbiciem na dwa niezależne etapy: **Retrieval** (wyszukiwanie wiedzy z bazy FAISS) oraz **Generację** (wierność i trafność odpowiedzi modelu), a także bada odporność na halucynacje przy pytaniach spoza bazy wiedzy (*Out-of-scope / Unanswerable*).
+
+### Uruchomienie ewaluacji
+```bash
+# Uruchomienie domyślne z parametrami z evals/config.py:
+python -m evals.eval
+
+# Uruchomienie z własną nazwą lub nadpisaniem parametrów przez CLI:
+python -m evals.eval --name eksperyment_v2 --k 5 --chunk-size 1000
+```
+Raport wraz z tabelami wyników i kolorowaniem gradientowym zapisywany jest jako plik HTML w katalogu `evals/reports/<nazwa_przebiegu>_k<top_k>_c<chunk_size>.html` (np. otwierany przez `Start-Process .\evals\reports\<plik>.html`).
+
+---
+
+### Architektura pomiaru i progi jakościowe
+
+1. **Etap Wyszukiwania (Retrieval):**
+   * **`context_recall` (Próg: 0.70):** Czy baza wektorowa (FAISS) odnalazła wszystkie fakty niezbędne do sformułowania wzorcowej odpowiedzi.
+   * **`context_precision_with_reference` (Próg: 0.60):** Czy najbardziej trafne fragmenty dokumentów znalazły się na szczycie listy wyników (`top-k`).
+2. **Etap Generacji (Generation):**
+   * **`faithfulness` (Próg: 0.80):** Czy każde stwierdzenie wygenerowane przez LLM wynika bezpośrednio z przekazanego kontekstu (brak halucynacji).
+   * **`answer_relevancy` (Próg: 0.70):** Czy odpowiedź bezpośrednio i wyczerpująco odpowiada na zadane pytanie użytkownika.
+3. **Test Odmowy (Out-of-scope / Unanswerable Cases):**
+   * Pytania-pułapki (np. *„Jaka jest stolica Francji?”*, *„Jaki jest termin rozprawy w sprawie o sygnaturze XYZ 123/24?”*), na które w źródłach celowo brak odpowiedzi.
+   * Sprawdzane w dedykowanej tabeli testu odmowy, co pozwala badać zachowanie bezpieczeństwa modelu bez sztucznego zniekształcania metryk `faithfulness` dla pytań faktograficznych.
+
+---
+
+### Raport jakościowy i wyniki ewaluacji
+
+Poniżej zestawiono wyniki zweryfikowanego przebiegu potoku RAG dla produkcyjnego promptu umożliwiającego syntezę kontekstu:
+
+* **Raport HTML:** [20261012-160213_k3_c800.html](file:///c:/Users/PC/source/repos/lex-agent-rpa/evals/reports/20261012-160213_k3_c800.html)
+* **Prompt generatora (`SYSTEM_PROMPT_TEMPLATE` w [evals/config.py](file:///c:/Users/PC/source/repos/lex-agent-rpa/evals/config.py)):**
+  ```text
+  Odpowiedz na pytanie na podstawie podanego kontekstu.
+  Możesz łączyć i wnioskować z powiązanych fragmentów kontekstu.
+  Tylko jeśli w kontekście zupełnie brak jakichkolwiek informacji na ten temat, napisz: 'Brak informacji w podanym kontekście.'
+
+  Kontekst:
+  {context}
+
+  Pytanie: {question}
+  ```
+* **Uzyskane wyniki metryk:**
+  * `context_recall`: **1.00** (Próg: 0.70 — **PASS**)
+  * `context_precision_with_reference`: **0.75** (Próg: 0.60 — **PASS**)
+  * `faithfulness`: **0.88** (Próg: 0.80 — **PASS**)
+  * `answer_relevancy`: **0.81** (Próg: 0.70 — **PASS**)
+  * Test odmowy: **2/2 OK** (100% poprawnych odmów)
+* **Wnioski i podsumowanie:**  
+  Udzielenie modelowi jawnej zgody na łączenie i wnioskowanie z powiązanych fragmentów kontekstu pozwoliło precyzyjnie powiązać nagłówki rejestrów Ministerstwa Sprawiedliwości z formularzami odpisów i zaświadczeń. Wszystkie metryki przekroczyły wymagane progi jakościowe (Quality Gates). Jednocześnie model utrzymał stuprocentową dyscyplinę odmowy odpowiedzi na pytania out-of-scope (*stolica Francji*, *fikcyjna sygnatura*), dowodząc braku halucynacji.
+

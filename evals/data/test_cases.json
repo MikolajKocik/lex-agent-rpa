@@ -1,0 +1,18 @@
+[
+  {
+    "question": "Do czego służy Portal Orzeczeń prowadzony przez Ministerstwo Sprawiedliwości?",
+    "reference": "Portal Orzeczeń służy do bezwnioskowej publikacji treści orzeczeń wraz z uzasadnieniem wydawanym przez sądy powszechne."
+  },
+  {
+    "question": "Jakie dokumenty i zaświadczenia można uzyskać z Centralnej Informacji Ksiąg Wieczystych?",
+    "reference": "W ramach systemu Ksiąg Wieczystych można pobrać formularze wniosków o wydanie odpisu księgi wieczystej lub zaświadczenia o zamknięciu księgi wieczystej."
+  },
+  {
+    "question": "Do czego służy aplikacja ZEUS w polskim sądownictwie?",
+    "reference": "Program ZEUS to aplikacja, która wspiera proces wypełniania formularzy uzasadnień wyroków w sprawach karnych."
+  },
+  {
+    "question": "Jakie usługi realizuje Rejestr Zastawów?",
+    "reference": "Rejestr Zastawów zapewnia wydawanie zaświadczeń i odpisów na podstawie danych z Centrali Rejestru Zastawów."
+  }
+]
