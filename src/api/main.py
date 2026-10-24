@@ -8,6 +8,7 @@ from nemoguardrails import Guardrails, RailsConfig
 from nemoguardrails.actions import action
 from nemoguardrails.llm.providers import register_chat_provider
 
+from src.api.metrics import setup_metrics
 from src.agent.graph import agent_app
 from src.api.routers.agent import router as agent_router
 from src.api.routers.search import router as search_router
@@ -33,7 +34,7 @@ async def run_langgraph_agent(context: dict):
     return (
         final_state.get("critic_opinion")
         or final_state.get("generation")
-        or "Zadanie zostało pomyślnie zrealizowane."
+        or "Zadanie zostalo pomyslnie zrealizowane."
     )
 
 
@@ -71,5 +72,6 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan
 )
+setup_metrics(app)
 app.include_router(agent_router, prefix="/api")
 app.include_router(search_router, prefix="/api")

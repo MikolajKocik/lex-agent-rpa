@@ -1,0 +1,63 @@
+groups:
+  - name: lar-agent-alerts
+    rules:
+      # P1: Agent stalled or caught in an infinite loop
+      - alert: AgentStallOrLoop
+        expr: lar_agent_execution_seconds{quantile="0.99"} > 120
+        for: 1m
+        labels:
+          severity: P1
+          service: lar-agent
+        annotations:
+          summary: "Agent execution time exceeded 2 minutes"
+          description: "Agent execution p99 latency is {{ $value }}s, indicating possible stuck reasoning or tool loop."
+
+      # P1: LLM Provider rate limit hit (429 / Quota)
+      - alert: LlmProviderRateLimited
+        expr: rate(lar_llm_requests_total{status="429"}[2m]) > 0
+        for: 30s
+        labels:
+          severity: P1
+          service: lar-llm
+        annotations:
+          summary: "LLM API provider rate limit reached"
+          description: "Model API is returning 429 Too Many Requests. Fallback provider or backoff required."
+
+      # P1: High API error rate (5xx errors)
+      - alert: ApiHighErrorRate
+        expr: >-
+          sum(rate(http_requests_total{status=~"5.."}[2m]))
+          /
+          sum(rate(http_requests_total[2m])) > 0.05
+        for: 1m
+        labels:
+          severity: P1
+          service: lar-api
+        annotations:
+          summary: "API 5xx error rate exceeded 5%"
+          description: "Current error rate is {{ $value | humanizePercentage }}. Backend services may be failing."
+
+      # P2: Agent tool failure rate warning
+      - alert: AgentToolFailureRateHigh
+        expr: >-
+          sum(rate(lar_agent_tool_calls_total{status="error"}[5m]))
+          /
+          sum(rate(lar_agent_tool_calls_total[5m])) > 0.15
+        for: 3m
+        labels:
+          severity: P2
+          service: lar-agent
+        annotations:
+          summary: "Tool execution failure rate is high (>15%)"
+          description: "Agent tools (browser, parser, DB) are failing at {{ $value | humanizePercentage }} rate."
+
+      # P2: API high latency (p95 > 2s)
+      - alert: ApiHighLatency
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 2
+        for: 2m
+        labels:
+          severity: P2
+          service: lar-api
+        annotations:
+          summary: "API p95 latency exceeds 2 seconds"
+          description: "API p95 latency is {{ $value }}s over the last 5 minutes."

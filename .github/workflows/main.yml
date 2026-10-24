@@ -71,6 +71,23 @@ jobs:
         run: |
           pytest -v
 
+  # grafana & prometheus alerting check for alertmanager
+  monitoring-check:
+    name: Verify Prometheus & Alertmanager Config
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify Alertmanager config and routing
+        run: |
+          docker run --rm -v "${{ github.workspace }}/alertmanager:/a" -w /a \
+            --entrypoint amtool prom/alertmanager:v0.34.1 check-config alertmanager.yml
+
+          docker run --rm -v "${{ github.workspace }}/alertmanager:/a" -w /a \
+            --entrypoint amtool prom/alertmanager:v0.34.1 config routes test \
+            --config.file=alertmanager.yml alertname=AgentStall severity=P1
+
   # Ragas Evaluation 
   evaluate-rag:
     name: RAG Quality Gate 
@@ -89,7 +106,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install . pytest ragas langchain-google-genai rich faiss-cpu
+          pip install ".[eval]"
 
       - name: Run RAG Evaluation Quality Gate
         env:

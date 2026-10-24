@@ -1,0 +1,62 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'service', 'severity']
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 4h
+  receiver: 'lar-discord-default'
+  routes:
+    # Critical P1 alerts (instant notification to critical channel)
+    - match:
+        severity: P1
+      receiver: 'lar-discord-critical'
+      group_wait: 5s
+      repeat_interval: 1h
+
+    # P2 / Warning alerts
+    - match:
+        severity: P2
+      receiver: 'lar-discord-warning'
+      group_wait: 30s
+      repeat_interval: 6h
+
+inhibit_rules:
+  # Silence P2 warnings if a critical P1 is already firing for the same service
+  - source_match:
+      severity: 'P1'
+    target_match:
+      severity: 'P2'
+    equal: ['service']
+
+receivers:
+  - name: 'lar-discord-default'
+    slack_configs:
+      - api_url: 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN/slack'
+        send_resolved: true
+        title: '[{{ .Status | toUpper }}] {{ .CommonLabels.alertname }} ({{ .CommonLabels.severity }})'
+        text: >-
+          *Summary:* {{ .CommonAnnotations.summary }}
+          *Description:* {{ .CommonAnnotations.description }}
+          *Service:* `{{ .CommonLabels.service }}`
+
+  - name: 'lar-discord-warning'
+    slack_configs:
+      - api_url: 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN/slack'
+        send_resolved: true
+        title: '[WARNING] {{ .CommonLabels.alertname }}'
+        text: >-
+          *Summary:* {{ .CommonAnnotations.summary }}
+          *Description:* {{ .CommonAnnotations.description }}
+          *Service:* `{{ .CommonLabels.service }}`
+
+  - name: 'lar-discord-critical'
+    slack_configs:
+      - api_url: 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN/slack'
+        send_resolved: true
+        title: '[CRITICAL P1] {{ .CommonLabels.alertname }}'
+        text: >-
+          *Summary:* {{ .CommonAnnotations.summary }}
+          *Description:* {{ .CommonAnnotations.description }}
+          *Service:* `{{ .CommonLabels.service }}`

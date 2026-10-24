@@ -11,7 +11,7 @@ services:
       - app-network
 
   db:
-    image: postgres:17-trixie
+    image: pgvector/pgvector:pg17
     restart: unless-stopped
     networks:
       - app-network
