@@ -362,7 +362,7 @@ W architekturze produkcyjnej agenta prawno-finansowego kluczowe jest nieprzerwan
 ### 1. Architektura Telemetrii i Metryk (`/metrics`)
 Aplikacja FastAPI wystawia w standardzie OpenMetrics metryki na dedykowanym punkcie końcowym `GET /metrics`. Zbierane dane dzielą się na dwa obszary:
 * **Warstwa HTTP:** Licznik żądań `http_requests_total` oraz histogram czasu odpowiedzi `http_request_duration_seconds`.
-* **Warstwa Agenta i Narzędzi (LangGraph Callback):** `LAR_AGENT_EXECUTION_SECONDS` (całkowity czas wykonania grafu), `LAR_LLM_REQUESTS_TOTAL` (zapytania do modeli wraz z kodami błędów, np. 429 rate-limit) oraz `LAR_AGENT_TOOL_CALLS_TOTAL` (sukcesy i porażki poszczególnych narzędzi: Playwright, RAG retriever, Slack, MS Graph).
+* **Warstwa Agenta i Narzędzi (LangGraph Callback):** `LAR_AGENT_EXECUTION_SECONDS` (całkowity czas wykonania grafu), `LAR_LLM_REQUESTS_TOTAL` (zapytania do modeli wraz ze statusami i limitami 429), `LAR_AGENT_TOOL_CALLS_TOTAL` (sukcesy i porażki narzędzi: Playwright, RAG retriever, Tavily) oraz `LAR_LLM_TOKENS_TOTAL` (dokładny wolumen tokenów wejściowych `input` i wyjściowych `output` do analizy kosztów).
 
 ---
 
@@ -377,6 +377,7 @@ Plik `prometheus/alerts.yml` definiuje wielopoziomowe reguły reagowania na incy
 | **`LlmProviderErrors`** | **P1 (Critical)** | `rate(lar_llm_requests_total{status="error"}[2m]) > 0` przez 30s | Błędy wywołań LLM (autoryzacja, sieć, awaria dostawcy) |
 | **`ApiHighErrorRate`** | **P1 (Critical)** | Błędy 5xx > 5% wszystkich żądań przez 1m | Awaria usług backendowych lub bazy danych |
 | **`AgentToolFailureRateHigh`** | **P2 (Warning)** | Błędy narzędzi agenta > 15% przez 2m | Problemy integracji (np. CAPTCHA, błąd parsowania PDF, portal sądowy) |
+| **`HighTokenConsumptionRate`** | **P2 (Warning)** | Zużycie tokenów `> 25k/min` przez 2m | Nietypowo intensywna generacja lub ryzyko spalenia budżetu tokenów |
 | **`ApiHighLatency`** | **P2 (Warning)** | Latencja p95 HTTP > 2s przez 2m | Degradacja wydajności punktów końcowych API |
 
 Reguły te są na bieżąco ewaluowane przez silnik Prometheusa:

@@ -86,3 +86,14 @@ groups:
         annotations:
           description: "Opóźnienie p95 API wynosi {{ $value }}s w ostatnich 5 minutach."
           summary: "API p95 latency exceeds 2 seconds"
+
+      # P2: High LLM token consumption rate
+      - alert: HighTokenConsumptionRate
+        expr: sum(rate(lar_llm_tokens_total[5m])) * 60 > 25000
+        for: 2m
+        labels:
+          severity: P2
+          service: lar-llm
+        annotations:
+          description: "Tempo zużycia tokenów LLM wynosi {{ $value | humanize }} tokenów/min (wykryto nietypowo duże obciążenie)."
+          summary: "Abnormally high LLM token consumption rate"

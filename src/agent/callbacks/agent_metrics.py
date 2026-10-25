@@ -5,7 +5,8 @@ from langchain_core.callbacks import BaseCallbackHandler
 from src.api.metrics import (
     LAR_AGENT_EXECUTION_SECONDS, 
     LAR_LLM_REQUESTS_TOTAL, 
-    LAR_AGENT_TOOL_CALLS_TOTAL
+    LAR_AGENT_TOOL_CALLS_TOTAL,
+    LAR_LLM_TOKENS_TOTAL
 )
 
 
@@ -53,6 +54,29 @@ class AgentMetricsCallbackHandler(BaseCallbackHandler):
             model="google",
             status="200"
         ).inc()
+
+        input_tokens = 0
+        output_tokens = 0
+
+        # LangChain usage_metadata attached to ChatGeneration message
+        if response.generations:
+            for gen_list in response.generations:
+                for gen in gen_list:
+                    msg = getattr(gen, "message", None)
+                    usage = getattr(msg, "usage_metadata", None) or {}
+                    input_tokens += usage.get("input_tokens", 0)
+                    output_tokens += usage.get("output_tokens", 0)
+
+        # llm_output token_usage fallback (Google / OpenAI format)
+        if not (input_tokens or output_tokens):
+            usage = (response.llm_output or {}).get("token_usage") or {}
+            input_tokens = usage.get("prompt_tokens") or usage.get("prompt_token_count", 0)
+            output_tokens = usage.get("completion_tokens") or usage.get("candidates_token_count", 0)
+
+        if input_tokens > 0:
+            LAR_LLM_TOKENS_TOTAL.labels(model="google", type="input").inc(input_tokens)
+        if output_tokens > 0:
+            LAR_LLM_TOKENS_TOTAL.labels(model="google", type="output").inc(output_tokens)
     
     def on_llm_error(self, error, **kwargs):
         status = "429" if "429" in str(error) else "error"

@@ -40,6 +40,12 @@ LAR_AGENT_TOOL_CALLS_TOTAL = Counter(
     ["tool_name", "status"]
 )
 
+LAR_LLM_TOKENS_TOTAL = Counter(
+    "lar_llm_tokens_total",
+    "Total tokens consumed by LLM calls categorized by model and token type (input/output)",
+    ["model", "type"]
+)
+
 
 def setup_metrics(app):
     """Rejestruje middleware oraz endpoint /metrics w aplikacji FastAPI."""

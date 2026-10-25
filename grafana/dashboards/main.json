@@ -126,6 +126,112 @@
                     }
                 }
             },
+            "panel-10": {
+                "kind": "Panel",
+                "spec": {
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "hidden": false,
+                                        "query": {
+                                            "datasource": {
+                                                "name": "prometheus"
+                                            },
+                                            "group": "prometheus",
+                                            "kind": "DataQuery",
+                                            "spec": {
+                                                "editorMode": "code",
+                                                "expr": "sum by (type) (lar_llm_tokens_total)",
+                                                "legendFormat": "{{type}} tokens",
+                                                "range": true
+                                            },
+                                            "version": "v0"
+                                        },
+                                        "refId": "A"
+                                    }
+                                }
+                            ],
+                            "queryOptions": {},
+                            "transformations": []
+                        }
+                    },
+                    "description": "Liczba tokenów wejściowych (prompt) oraz wyjściowych (generacja) z podziałem na okna czasowe",
+                    "id": 10,
+                    "links": [],
+                    "title": "LLM Token Consumption (Input vs Output)",
+                    "vizConfig": {
+                        "group": "bargauge",
+                        "kind": "VizConfig",
+                        "spec": {
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "palette-classic"
+                                    },
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": 0
+                                            },
+                                            {
+                                                "color": "red",
+                                                "value": 80
+                                            }
+                                        ]
+                                    }
+                                },
+                                "overrides": [
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "input tokens"
+                                        },
+                                        "properties": []
+                                    },
+                                    {
+                                        "matcher": {
+                                            "id": "byName",
+                                            "options": "output tokens"
+                                        },
+                                        "properties": []
+                                    }
+                                ]
+                            },
+                            "options": {
+                                "displayMode": "basic",
+                                "legend": {
+                                    "calcs": [],
+                                    "displayMode": "list",
+                                    "placement": "bottom",
+                                    "showLegend": false
+                                },
+                                "maxVizHeight": 300,
+                                "minVizHeight": 16,
+                                "minVizWidth": 8,
+                                "namePlacement": "auto",
+                                "orientation": "horizontal",
+                                "reduceOptions": {
+                                    "calcs": [
+                                        "lastNotNull"
+                                    ],
+                                    "fields": "",
+                                    "values": false
+                                },
+                                "showUnfilled": true,
+                                "sizing": "auto",
+                                "valueMode": "color"
+                            }
+                        },
+                        "version": "13.2.3"
+                    }
+                }
+            },
             "panel-2": {
                 "kind": "Panel",
                 "spec": {
@@ -983,34 +1089,8 @@
                                 "name": "panel-1"
                             },
                             "height": 3,
-                            "width": 6,
+                            "width": 4,
                             "x": 0,
-                            "y": 0
-                        }
-                    },
-                    {
-                        "kind": "GridLayoutItem",
-                        "spec": {
-                            "element": {
-                                "kind": "ElementReference",
-                                "name": "panel-2"
-                            },
-                            "height": 3,
-                            "width": 6,
-                            "x": 6,
-                            "y": 0
-                        }
-                    },
-                    {
-                        "kind": "GridLayoutItem",
-                        "spec": {
-                            "element": {
-                                "kind": "ElementReference",
-                                "name": "panel-3"
-                            },
-                            "height": 3,
-                            "width": 6,
-                            "x": 12,
                             "y": 0
                         }
                     },
@@ -1022,8 +1102,47 @@
                                 "name": "panel-4"
                             },
                             "height": 3,
-                            "width": 6,
-                            "x": 18,
+                            "width": 4,
+                            "x": 4,
+                            "y": 0
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-3"
+                            },
+                            "height": 3,
+                            "width": 4,
+                            "x": 8,
+                            "y": 0
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-2"
+                            },
+                            "height": 3,
+                            "width": 5,
+                            "x": 12,
+                            "y": 0
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-10"
+                            },
+                            "height": 3,
+                            "width": 7,
+                            "x": 17,
                             "y": 0
                         }
                     },
@@ -1034,7 +1153,7 @@
                                 "kind": "ElementReference",
                                 "name": "panel-5"
                             },
-                            "height": 9,
+                            "height": 8,
                             "width": 12,
                             "x": 0,
                             "y": 3
@@ -1047,7 +1166,7 @@
                                 "kind": "ElementReference",
                                 "name": "panel-6"
                             },
-                            "height": 9,
+                            "height": 8,
                             "width": 12,
                             "x": 12,
                             "y": 3
@@ -1058,25 +1177,12 @@
                         "spec": {
                             "element": {
                                 "kind": "ElementReference",
-                                "name": "panel-7"
-                            },
-                            "height": 9,
-                            "width": 8,
-                            "x": 0,
-                            "y": 12
-                        }
-                    },
-                    {
-                        "kind": "GridLayoutItem",
-                        "spec": {
-                            "element": {
-                                "kind": "ElementReference",
                                 "name": "panel-8"
                             },
                             "height": 9,
-                            "width": 8,
-                            "x": 8,
-                            "y": 12
+                            "width": 10,
+                            "x": 0,
+                            "y": 11
                         }
                     },
                     {
@@ -1087,9 +1193,22 @@
                                 "name": "panel-9"
                             },
                             "height": 9,
-                            "width": 8,
-                            "x": 16,
-                            "y": 12
+                            "width": 9,
+                            "x": 10,
+                            "y": 11
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-7"
+                            },
+                            "height": 9,
+                            "width": 5,
+                            "x": 19,
+                            "y": 11
                         }
                     }
                 ]
@@ -1122,7 +1241,7 @@
                 "1d"
             ],
             "fiscalYearStartMonth": 0,
-            "from": "now-30m",
+            "from": "now-3h",
             "hideTimepicker": false,
             "timezone": "browser",
             "to": "now"
