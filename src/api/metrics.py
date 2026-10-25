@@ -1,11 +1,12 @@
 import time
+
 from fastapi import Request, Response
 from prometheus_client import (
+    CONTENT_TYPE_LATEST,
     Counter,
     Histogram,
     Summary,
     generate_latest,
-    CONTENT_TYPE_LATEST,
 )
 
 # HTTP metrics

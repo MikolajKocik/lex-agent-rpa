@@ -3,10 +3,10 @@ import time
 from langchain_core.callbacks import BaseCallbackHandler
 
 from src.api.metrics import (
-    LAR_AGENT_EXECUTION_SECONDS, 
-    LAR_LLM_REQUESTS_TOTAL, 
+    LAR_AGENT_EXECUTION_SECONDS,
     LAR_AGENT_TOOL_CALLS_TOTAL,
-    LAR_LLM_TOKENS_TOTAL
+    LAR_LLM_REQUESTS_TOTAL,
+    LAR_LLM_TOKENS_TOTAL,
 )
 
 

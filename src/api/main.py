@@ -8,10 +8,10 @@ from nemoguardrails import Guardrails, RailsConfig
 from nemoguardrails.actions import action
 from nemoguardrails.llm.providers import register_chat_provider
 
-import src.agent.guardrails.actions  
+import src.agent.guardrails.actions  # noqa: F401
 from src.agent.callbacks.agent_metrics import AgentMetricsCallbackHandler
-from src.api.metrics import setup_metrics
 from src.agent.graph import agent_app
+from src.api.metrics import setup_metrics
 from src.api.routers.agent import router as agent_router
 from src.api.routers.search import router as search_router
 
