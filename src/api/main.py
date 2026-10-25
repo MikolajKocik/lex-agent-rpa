@@ -8,6 +8,7 @@ from nemoguardrails import Guardrails, RailsConfig
 from nemoguardrails.actions import action
 from nemoguardrails.llm.providers import register_chat_provider
 
+import src.agent.guardrails.actions  
 from src.agent.callbacks.agent_metrics import AgentMetricsCallbackHandler
 from src.api.metrics import setup_metrics
 from src.agent.graph import agent_app

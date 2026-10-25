@@ -11,6 +11,7 @@ services:
     environment:
       - NVIDIA_API_KEY=${NVIDIA_API_KEY}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
       - DATABASE_URL=postgresql+asyncpg://lex_user:${POSTGRES_PASSWORD:?Error POSTGRES_PASSWORD not set}@db:5432/lex_agent_db
 
   db:
