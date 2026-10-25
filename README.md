@@ -15,6 +15,9 @@ Autonomous legal intelligence system designed for legal firms, compliance depart
 
 ## System Architecture
 
+<details>
+<summary>System Architecture Diagram</summary>
+
 ```mermaid
 flowchart TD
     subgraph INGRESS["1. Ingress & Remote Access"]
@@ -51,6 +54,8 @@ flowchart TD
         RPA_Node <--> MSGraph["Microsoft Graph API<br/>(Outlook E-mail Attachments)"]
     end
 ```
+
+</details>
 
 ---
 
