@@ -4,6 +4,7 @@ import pytest
 
 from src.agent.graph import agent_app
 from src.agent.guardrails.actions.check_hallucination import check_hallucination_action
+from src.agent.guardrails.actions.check_off_topic import check_off_topic
 
 
 @pytest.mark.asyncio
@@ -84,3 +85,31 @@ async def test_agent_graph_executes_with_document_content() -> None:
 
             assert final_state.get("rpa_status") == "success"
             assert "document_content" in final_state
+
+
+@pytest.mark.asyncio
+async def test_check_off_topic_empty_input_returns_true() -> None:
+    result = await check_off_topic(context={})
+    assert result is True
+
+
+@pytest.mark.asyncio
+@patch("src.agent.guardrails.actions.check_off_topic.ChatGoogleGenerativeAI")
+async def test_check_off_topic_blocks_cooking_input(mock_chat: MagicMock) -> None:
+    with patch("langchain_core.runnables.base.RunnableSequence.ainvoke", new_callable=AsyncMock) as mock_invoke:
+        mock_invoke.return_value = "YES"
+
+        context = {"last_user_message": "Podaj mi przepis na pyszną szarlotkę z cynamonem."}
+        is_on_topic = await check_off_topic(context=context)
+        assert is_on_topic is False
+
+
+@pytest.mark.asyncio
+@patch("src.agent.guardrails.actions.check_off_topic.ChatGoogleGenerativeAI")
+async def test_check_off_topic_allows_legal_input(mock_chat: MagicMock) -> None:
+    with patch("langchain_core.runnables.base.RunnableSequence.ainvoke", new_callable=AsyncMock) as mock_invoke:
+        mock_invoke.return_value = "NO"
+
+        context = {"last_user_message": "Przeanalizuj umowę o pracę pod kątem klauzul RODO."}
+        is_on_topic = await check_off_topic(context=context)
+        assert is_on_topic is True

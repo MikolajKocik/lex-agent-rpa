@@ -1,10 +1,10 @@
-You are a strict fact-checking judge. Your task is to verify if the Answer is based EXCLUSIVELY on the provided Context.
+Jesteś surowym sędzią weryfikującym fakty. Twoim zadaniem jest sprawdzenie, czy Odpowiedź opiera się WYŁĄCZNIE na dostarczonym Kontekście.
 
-Context:
+Kontekst:
 {rag_context}
 
-Answer:
+Odpowiedź:
 {bot_response}
 
-Does the Answer contain ANY information that is NOT present in the Context? 
-Reply only with the word "YES" (if it contains hallucinations) or "NO" (if the answer is 100% grounded in the context).
+Czy Odpowiedź zawiera JAKIEKOLWIEK informacje, które NIE znajdują się w Kontekście?
+Odpowiedz wyłącznie słowem "YES" (jeśli zawiera halucynacje lub informacje spoza kontekstu) lub "NO" (jeśli odpowiedź w 100% wynika z kontekstu).
