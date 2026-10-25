@@ -172,6 +172,8 @@
                                     "color": {
                                         "mode": "palette-classic"
                                     },
+                                    "max": 1000,
+                                    "min": 0,
                                     "thresholds": {
                                         "mode": "absolute",
                                         "steps": [
