@@ -16,6 +16,24 @@ services:
     networks:
       - app-network
 
+  prometheus:
+    image: prom/prometheus:v3.15.0
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana:13.2.3
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  alertmanager:
+    image: prom/alertmanager:v0.28.0
+    restart: unless-stopped
+    networks:
+      - app-network
+
   tests:
     build:
       context: .

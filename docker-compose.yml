@@ -30,7 +30,6 @@ services:
       retries: 5
 
   prometheus:
-    image: prom/prometheus:v3.15.0
     profiles: ["observability"]
     ports:
       - "9090:9090"
@@ -38,7 +37,6 @@ services:
       - ./prometheus:/etc/prometheus:ro          
 
   grafana:
-    image: grafana/grafana:13.2.3
     profiles: ["observability"]
     ports:
       - "3000:3000"
@@ -50,7 +48,6 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
 
   alertmanager:
-    image: prom/alertmanager:v0.28.0
     container_name: lar-alertmanager
     profiles: ["observability"]
     environment:
@@ -65,7 +62,6 @@ services:
       - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     ports:
       - "9093:9093"
-    restart: unless-stopped
 
   tests:
     profiles: ["test"]
