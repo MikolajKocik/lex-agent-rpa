@@ -52,7 +52,15 @@ services:
   alertmanager:
     image: prom/alertmanager:v0.28.0
     container_name: lar-alertmanager
-    profiles: ["observability"] 
+    profiles: ["observability"]
+    environment:
+      - DISCORD_WEBHOOK=${DISCORD_WEBHOOK}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        echo "$$DISCORD_WEBHOOK" > /tmp/discord_webhook
+        exec /bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml --storage.path=/alertmanager
     volumes:
       - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     ports:

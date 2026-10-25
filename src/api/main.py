@@ -8,6 +8,7 @@ from nemoguardrails import Guardrails, RailsConfig
 from nemoguardrails.actions import action
 from nemoguardrails.llm.providers import register_chat_provider
 
+from src.agent.callbacks.agent_metrics import AgentMetricsCallbackHandler
 from src.api.metrics import setup_metrics
 from src.agent.graph import agent_app
 from src.api.routers.agent import router as agent_router
@@ -25,11 +26,17 @@ async def run_langgraph_agent(context: dict):
     user_message = context.get("last_user_message", "")
     document_content = context.get("document_content", "")
 
-    final_state = await agent_app.ainvoke({
-        "input_task": user_message,
-        "document_content": document_content,
-        "messages": [],
-    })
+    final_state = await agent_app.ainvoke(
+        {
+            "input_task": user_message,
+            "document_content": document_content,
+            "messages": [],
+        },
+        config={
+            "callbacks": [AgentMetricsCallbackHandler()],
+            "recursion_limit": 20,
+        },
+    )
 
     return (
         final_state.get("critic_opinion")

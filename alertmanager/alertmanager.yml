@@ -32,31 +32,31 @@ inhibit_rules:
 
 receivers:
   - name: 'lar-discord-default'
-    slack_configs:
-      - api_url: 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN/slack'
+    discord_configs:
+      - webhook_url_file: '/tmp/discord_webhook'
         send_resolved: true
         title: '[{{ .Status | toUpper }}] {{ .CommonLabels.alertname }} ({{ .CommonLabels.severity }})'
-        text: >-
+        message: >-
           *Summary:* {{ .CommonAnnotations.summary }}
           *Description:* {{ .CommonAnnotations.description }}
           *Service:* `{{ .CommonLabels.service }}`
 
   - name: 'lar-discord-warning'
-    slack_configs:
-      - api_url: 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN/slack'
+    discord_configs:
+      - webhook_url_file: '/tmp/discord_webhook'
         send_resolved: true
         title: '[WARNING] {{ .CommonLabels.alertname }}'
-        text: >-
+        message: >-
           *Summary:* {{ .CommonAnnotations.summary }}
           *Description:* {{ .CommonAnnotations.description }}
           *Service:* `{{ .CommonLabels.service }}`
 
   - name: 'lar-discord-critical'
-    slack_configs:
-      - api_url: 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN/slack'
+    discord_configs:
+      - webhook_url_file: '/tmp/discord_webhook'
         send_resolved: true
         title: '[CRITICAL P1] {{ .CommonLabels.alertname }}'
-        text: >-
+        message: >-
           *Summary:* {{ .CommonAnnotations.summary }}
           *Description:* {{ .CommonAnnotations.description }}
           *Service:* `{{ .CommonLabels.service }}`
