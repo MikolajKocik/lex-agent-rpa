@@ -353,3 +353,48 @@ Poniżej zestawiono wyniki zweryfikowanego przebiegu potoku RAG dla produkcyjneg
 * **Wnioski i podsumowanie:**  
   Udzielenie modelowi jawnej zgody na łączenie i wnioskowanie z powiązanych fragmentów kontekstu pozwoliło precyzyjnie powiązać nagłówki rejestrów Ministerstwa Sprawiedliwości z formularzami odpisów i zaświadczeń. Wszystkie metryki przekroczyły wymagane progi jakościowe (Quality Gates). Jednocześnie model utrzymał stuprocentową dyscyplinę odmowy odpowiedzi na pytania out-of-scope (*stolica Francji*, *fikcyjna sygnatura*), dowodząc braku halucynacji.
 
+---
+
+## Monitoring, Obserwowalność i Alerting (Prometheus, Alertmanager & Grafana)
+
+W architekturze produkcyjnej agenta prawno-finansowego kluczowe jest nieprzerwane monitorowanie opóźnień, współczynnika awarii zewnętrznych integracji RPA oraz limitów API modeli LLM. System posiada zintegrowany, skonteneryzowany stos telemetryczny oparty o **Prometheus v3**, **Alertmanager** oraz **Grafanę**.
+
+### 1. Architektura Telemetrii i Metryk (`/metrics`)
+Aplikacja FastAPI wystawia w standardzie OpenMetrics metryki na dedykowanym punkcie końcowym `GET /metrics`. Zbierane dane dzielą się na dwa obszary:
+* **Warstwa HTTP:** Licznik żądań `http_requests_total` oraz histogram czasu odpowiedzi `http_request_duration_seconds`.
+* **Warstwa Agenta i Narzędzi (LangGraph Callback):** `LAR_AGENT_EXECUTION_SECONDS` (całkowity czas wykonania grafu), `LAR_LLM_REQUESTS_TOTAL` (zapytania do modeli wraz z kodami błędów, np. 429 rate-limit) oraz `LAR_AGENT_TOOL_CALLS_TOTAL` (sukcesy i porażki poszczególnych narzędzi: Playwright, RAG retriever, Slack, MS Graph).
+
+---
+
+### 2. Reguły Alertowania (Prometheus Alerts)
+Plik `prometheus/alerts.yml` definiuje wielopoziomowe reguły reagowania na incydenty w czasie rzeczywistym:
+
+| Reguła | Poziom | Warunek wyzwolenia | Opis incydentu |
+|---|:---:|---|---|
+| **`ApiServiceDown`** | **P1 (Critical)** | `up{job="lar-api"} == 0` przez 1m | Całkowita niedostępność usługi API (FastAPI) |
+| **`AgentStallOrLoop`** | **P1 (Critical)** | Średni czas agenta `> 120s` przez 1m | Wykrycie zacięcia agenta lub nieskończonej pętli wnioskowania |
+| **`LlmProviderRateLimited`** | **P1 (Critical)** | `rate(lar_llm_requests_total{status="429"}[2m]) > 0` przez 30s | Przekroczenie limitów (Quota/TPM) u dostawcy modelu LLM |
+| **`LlmProviderErrors`** | **P1 (Critical)** | `rate(lar_llm_requests_total{status="error"}[2m]) > 0` przez 30s | Błędy wywołań LLM (autoryzacja, sieć, awaria dostawcy) |
+| **`ApiHighErrorRate`** | **P1 (Critical)** | Błędy 5xx > 5% wszystkich żądań przez 1m | Awaria usług backendowych lub bazy danych |
+| **`AgentToolFailureRateHigh`** | **P2 (Warning)** | Błędy narzędzi agenta > 15% przez 2m | Problemy integracji (np. CAPTCHA, błąd parsowania PDF, portal sądowy) |
+| **`ApiHighLatency`** | **P2 (Warning)** | Latencja p95 HTTP > 2s przez 2m | Degradacja wydajności punktów końcowych API |
+
+Reguły te są na bieżąco ewaluowane przez silnik Prometheusa:
+
+![Reguły alertowania w Prometheus](docs/prometheus-alert-image.PNG)
+
+Alerty o krytyczności **P1** oraz ostrzeżenia **P2** są automatycznie przekazywane przez **Alertmanager** do dedykowanego kanału na platformie **Discord** za pośrednictwem bezpiecznego webhooka (`webhook_url_file`).
+
+---
+
+### 3. Dashboard Analityczny w Grafanie
+
+Do wizualizacji parametrów pracy agenta, obciążenia i kondycji systemu w czasie rzeczywistym wykorzystywany jest dashboard Grafany zintegrowany ze źródłem danych Prometheus (`http://prometheus:9090`).
+
+![Dashboard Grafany - Analityka Agenta i Metryki Systemowe](docs/grafana-dashboard.PNG)
+
+Dashboard obejmuje kluczowe panele operacyjne:
+* **Statystyki KPI (górny wiersz):** Średni czas wykonania zadań agenta (*Avg Agent Task Latency*), wskaźnik sukcesu wywołań narzędzi (*Tool Execution Success Rate*), łączna liczba przetworzonych zadań (*Total Completed Tasks*) oraz wskaźnik błędów serwera (*API 5xx Error Rate*).
+* **Wydajność Agenta i LLM (środkowy wiersz):** Trend czasu trwania zadań (*Agent Task Duration Trend*) oraz natężenie wywołań modeli językowych wraz ze statusem odpowiedzi i limitami (*LLM Invocations & Rate Limits*).
+* **Infrastruktura i API (dolny wiersz):** Zdrowie i użycie zewnętrznych narzędzi agenta (*Agent Tools Usage & Health*), przepustowość punktów końcowych (*API Request Throughput: /api/health, /api/task*) oraz percentyle opóźnień odpowiedzi (*API Latency Percentiles p50 / p95*).
+

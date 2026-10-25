@@ -13,6 +13,7 @@ class AgentMetricsCallbackHandler(BaseCallbackHandler):
     def __init__(self):
         super().__init__()
         self._start_times: dict[str, float] = {}
+        self._tool_names: dict[str, str] = {}
 
     def on_chain_start(self, serialized, inputs, *, run_id, parent_run_id=None, **kwargs):
         if parent_run_id is None:
@@ -28,15 +29,20 @@ class AgentMetricsCallbackHandler(BaseCallbackHandler):
             duration = time.perf_counter() - self._start_times.pop(str(run_id))
             LAR_AGENT_EXECUTION_SECONDS.observe(duration) 
 
-    def on_tool_end(self, output, **kwargs):
-        tool_name = kwargs.get("name", "unknown")
+    def on_tool_start(self, serialized, input_str, *, run_id=None, **kwargs):
+        name = (serialized or {}).get("name") or kwargs.get("name") or "tool"
+        if run_id:
+            self._tool_names[str(run_id)] = name
+
+    def on_tool_end(self, output, *, run_id=None, **kwargs):
+        tool_name = self._tool_names.pop(str(run_id), kwargs.get("name", "tool"))
         LAR_AGENT_TOOL_CALLS_TOTAL.labels(
             tool_name=tool_name, 
             status="success"
         ).inc()
 
-    def on_tool_error(self, error, **kwargs):
-        tool_name = kwargs.get("name", "unknown")
+    def on_tool_error(self, error, *, run_id=None, **kwargs):
+        tool_name = self._tool_names.pop(str(run_id), kwargs.get("name", "tool"))
         LAR_AGENT_TOOL_CALLS_TOTAL.labels(
             tool_name=tool_name,
             status="error"

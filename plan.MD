@@ -110,3 +110,9 @@ Agentic legal assistant system powered by autonomous graph orchestration, RPA br
 - [x] **Quality Evaluation Benchmarks (LLM-as-a-judge):**
   - [x] Curated statutory evaluation benchmark dataset (`tests/evaluation/eval_dataset.json`).
   - [x] Legal retrieval benchmark measuring Hit-Rate@K and Mean Reciprocal Rank (MRR) (`tests/evaluation/test_rag_eval.py`).
+- [x] **Observability, Telemetry & Alerting (Prometheus & Alertmanager):**
+  - [x] Real-time Prometheus metrics exposure endpoint (`GET /metrics`) with HTTP latency histograms and request counters (`src/api/metrics.py`).
+  - [x] Agent execution telemetry tracking workflow latency, tool execution status, and LLM rate-limit/429 errors via LangChain callback handler (`src/agent/callbacks/agent_metrics.py`).
+  - [x] Multi-tier Prometheus alerting rules for agent stall/loop (P1), LLM 429 rate-limiting (P1), 5xx error spikes (P1), and tool failure rates (P2) (`prometheus/alerts.yml`).
+  - [x] Alertmanager routing pipeline with P1/P2 alert inhibition and notification dispatch to Discord (`alertmanager/alertmanager.yml`).
+  - [x] Observability stack containerization (Prometheus, Alertmanager, Grafana) unified under shared `app-network` orchestration (`docker-compose.yml`, `docker-compose.override.yml`).

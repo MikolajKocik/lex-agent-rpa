@@ -1,15 +1,29 @@
 groups:
   - name: lar-agent-alerts
     rules:
+      # P1: Core API service down
+      - alert: ApiServiceDown
+        expr: up{job="lar-api"} == 0
+        for: 1m
+        labels:
+          severity: P1
+          service: lar-api
+        annotations:
+          description: "Usługa lar-api (FastAPI) jest nieosiągalna dla Prometheusa od ponad 1 minuty."
+          summary: "API Service is Down"
+
       # P1: Agent stalled or caught in an infinite loop
       - alert: AgentStallOrLoop
-        expr: lar_agent_execution_seconds{quantile="0.99"} > 120
+        expr: >-
+          (rate(lar_agent_execution_seconds_sum[5m])
+          /
+          rate(lar_agent_execution_seconds_count[5m])) > 120
         for: 1m
         labels:
           severity: P1
           service: lar-agent
         annotations:
-          description: "Agent execution p99 latency is {{ $value }}s, indicating possible stuck reasoning or tool loop."
+          description: "Średni czas wykonania zadania przez agenta przekracza 120s (wykryto możliwą pętlę rozumowania lub zawieszenie)."
           summary: "Agent execution time exceeded 2 minutes"
 
       # P1: LLM Provider rate limit hit (429 / Quota)
@@ -20,8 +34,19 @@ groups:
           severity: P1
           service: lar-llm
         annotations:
-          description: "Model API is returning 429 Too Many Requests. Fallback provider or backoff required."
+          description: "Model API zwraca 429 Too Many Requests (przekroczono limity Quota/TPM u dostawcy)."
           summary: "LLM API provider rate limit reached"
+
+      # P1: LLM Provider error (connectivity, API key, auth, 5xx)
+      - alert: LlmProviderErrors
+        expr: rate(lar_llm_requests_total{status="error"}[2m]) > 0
+        for: 30s
+        labels:
+          severity: P1
+          service: lar-llm
+        annotations:
+          description: "Wykryto błędy komunikacji z modelem LLM (błąd autoryzacji, sieciowy lub awaria API dostawcy)."
+          summary: "LLM API provider invocation failures detected"
 
       # P1: High API error rate (5xx errors)
       - alert: ApiHighErrorRate
@@ -34,7 +59,7 @@ groups:
           severity: P1
           service: lar-api
         annotations:
-          description: "Current error rate is {{ $value | humanizePercentage }}. Backend services may be failing."
+          description: "Wskaźnik błędów 5xx wynosi {{ $value | humanizePercentage }}. Usługi backendowe mogą ulegać awarii."
           summary: "API 5xx error rate exceeded 5%"
 
       # P2: Agent tool failure rate warning
@@ -43,21 +68,21 @@ groups:
           sum(rate(lar_agent_tool_calls_total{status="error"}[5m]))
           /
           sum(rate(lar_agent_tool_calls_total[5m])) > 0.15
-        for: 3m
+        for: 2m
         labels:
           severity: P2
           service: lar-agent
         annotations:
-          description: "Agent tools (browser, parser, DB) are failing at {{ $value | humanizePercentage }} rate."
+          description: "Narzędzia agenta (wyszukiwarka, RAG, Playwright) zawodzą ze wskaźnikiem {{ $value | humanizePercentage }}."
           summary: "Tool execution failure rate is high (>15%)"
 
       # P2: API high latency (p95 > 2s)
       - alert: ApiHighLatency
-        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 2
+        expr: histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m]))) > 2
         for: 2m
         labels:
           severity: P2
           service: lar-api
         annotations:
-          description: "API p95 latency is {{ $value }}s over the last 5 minutes."
+          description: "Opóźnienie p95 API wynosi {{ $value }}s w ostatnich 5 minutach."
           summary: "API p95 latency exceeds 2 seconds"
