@@ -18,8 +18,12 @@ from dotenv import load_dotenv
 import pandas as pd
 
 load_dotenv()
-if "GOOGLE_API_KEY" in os.environ and "GEMINI_API_KEY" not in os.environ:
-    os.environ["GEMINI_API_KEY"] = os.environ["GOOGLE_API_KEY"]
+api_key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+if not api_key:
+    raise ValueError("GOOGLE_API_KEY or GEMINI_API_KEY environment variable is required.")
+
+os.environ["GOOGLE_API_KEY"] = api_key
+os.environ["GEMINI_API_KEY"] = api_key
 os.environ.setdefault("USER_AGENT", "LexAgentRPA/1.0")
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -76,7 +80,7 @@ def build_vectorstore(urls: list[str], chunk_size: int, chunk_overlap: int, embe
     splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
     splits = splitter.split_documents(docs)
 
-    emb = GoogleGenerativeAIEmbeddings(model=embedding_model)
+    emb = GoogleGenerativeAIEmbeddings(model=embedding_model, google_api_key=api_key)
     vectorstore = FAISS.from_documents(documents=splits, embedding=emb)
     return vectorstore, emb
 
@@ -287,21 +291,21 @@ def main():
     args.output_dir.mkdir(parents=True, exist_ok=True)
     summary_md_path = args.output_dir / "summary.md"
     write_summary_md(summary_md_path, run_name, effective_config, summary, failures, unanswerable_df)
-    print(f"\n[OK] Zapisano podsumowanie Markdown: {summary_md_path}")
+    print(f"\nSaved evaluation summary: {summary_md_path}")
 
-    print("\n--- WYNIKI ---")
+    print("\n--- Evaluation Results ---")
     for m, s in summary.items():
         status = "PASS" if s["passed"] else "FAIL"
-        print(f"[{status}] {m} ({s['stage']}): {s['mean']:.2f} (prog: {s['threshold']:.2f})")
+        print(f"[{status}] {m} ({s['stage']}): {s['mean']:.2f} (threshold: {s['threshold']:.2f})")
 
     failed = [m for m, s in summary.items() if not s["passed"]]
     if failed:
         stages = sorted({summary[m]["stage"] for m in failed})
-        print(f"\n[BLAD] Metryki ponizej progu: {', '.join(failed)}")
-        print(f"Etapy do weryfikacji: {', '.join(stages)}")
+        print(f"\nMetrics below threshold: {', '.join(failed)}")
+        print(f"Stages failing: {', '.join(stages)}")
         sys.exit(1)
 
-    print("\n[SUKCES] Wszystkie metryki powyzej progow jakosciowych!")
+    print("\nAll metrics passed quality gates.")
 
 
 if __name__ == "__main__":
