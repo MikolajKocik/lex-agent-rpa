@@ -315,7 +315,7 @@ python -m evals.eval
 # Uruchomienie z własną nazwą lub nadpisaniem parametrów przez CLI:
 python -m evals.eval --name eksperyment_v2 --k 5 --chunk-size 1000
 ```
-Raport wraz z tabelami wyników i kolorowaniem gradientowym zapisywany jest jako plik HTML w katalogu `evals/reports/<nazwa_przebiegu>_k<top_k>_c<chunk_size>.html` (np. otwierany przez `Start-Process .\evals\reports\<plik>.html`).
+Podsumowanie ewaluacji zapisywane jest w katalogu `evals/reports/summary.md` (wykorzystywane bezpośrednio w potoku CI przez GitHub Actions Step Summary) oraz wyświetlane w konsoli.
 
 ---
 
@@ -337,7 +337,6 @@ Raport wraz z tabelami wyników i kolorowaniem gradientowym zapisywany jest jako
 
 Poniżej zestawiono wyniki zweryfikowanego przebiegu potoku RAG dla produkcyjnego promptu umożliwiającego syntezę kontekstu:
 
-* **Raport HTML:** [20261012-160213_k3_c800.html](file:///c:/Users/PC/source/repos/lex-agent-rpa/evals/reports/20261012-160213_k3_c800.html)
 * **Prompt generatora (`SYSTEM_PROMPT_TEMPLATE` w [evals/config.py](file:///c:/Users/PC/source/repos/lex-agent-rpa/evals/config.py)):**
   ```text
   Odpowiedz na pytanie na podstawie podanego kontekstu.
